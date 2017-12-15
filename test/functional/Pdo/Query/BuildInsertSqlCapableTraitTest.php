@@ -33,6 +33,7 @@ class BuildInsertSqlCapableTraitTest extends TestCase
                             [
                                 '_escapeSqlReference',
                                 '_escapeSqlReferenceArray',
+                                '_normalizeString',
                             ]
                         );
 
@@ -43,6 +44,11 @@ class BuildInsertSqlCapableTraitTest extends TestCase
         $mock->method('_escapeSqlReferenceArray')->willReturnCallback(
             function($input) {
                 return implode(', ', $input);
+            }
+        );
+        $mock->method('_normalizeString')->willReturnCallback(
+            function($input) {
+                return strval($input);
             }
         );
 
@@ -77,7 +83,7 @@ class BuildInsertSqlCapableTraitTest extends TestCase
 
         $result = $reflect->_buildInsertSql(
             $table = 'test',
-            $columns = ['id', 'name', 'surname'],
+            $columns = ['id', 'name', 'last_name'],
             $rows = [
                 [
                     'id'      => 1,
@@ -89,11 +95,20 @@ class BuildInsertSqlCapableTraitTest extends TestCase
                     'name'    => 'Anton',
                     'surname' => 'Ukhanev',
                 ],
+            ],
+            $columnMap = [
+                'surname' => 'last_name',
+            ],
+            $valueHashMap = [
+                '1'      => ':123',
+                '2'      => ':456',
+                'Miguel' => ':321',
+                'Muscat' => ':654',
             ]
         );
 
         $this->assertEquals(
-            'INSERT INTO test (id, name, surname) VALUES (1, "Miguel", "Muscat"), (2, "Anton", "Ukhanev");',
+            'INSERT INTO test (id, name, last_name) VALUES (:123, :321, :654), (:456, "Anton", "Ukhanev");',
             $result,
             'Retrieved and expected queries do not match.'
         );
