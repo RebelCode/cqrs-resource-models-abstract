@@ -3,6 +3,8 @@
 namespace RebelCode\Storage\Resource\Pdo\Query;
 
 use Dhii\Expression\LogicalExpressionInterface;
+use Dhii\Output\Exception\RendererExceptionInterface;
+use Dhii\Output\Exception\TemplateRenderExceptionInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 
@@ -49,6 +51,9 @@ trait BuildSqlWhereClauseCapableTrait
      * @param string[]|Stringable[]      $valueHashMap Optional mapping of term names to their hashes.
      *
      * @return string|Stringable The rendered condition.
+     *
+     * @throws RendererExceptionInterface If an error occurred while rendering.
+     * @throws TemplateRenderExceptionInterface If the renderer failed to render the expression and context.
      */
     abstract protected function _renderSqlCondition(
         LogicalExpressionInterface $condition,
