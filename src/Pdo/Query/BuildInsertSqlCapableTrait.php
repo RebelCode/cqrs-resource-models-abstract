@@ -7,14 +7,14 @@ use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 
 /**
- * Common functionality for objects that can built INSERT SQL queries.
+ * Common functionality for objects that can build INSERT SQL queries.
  *
  * @since [*next-version*]
  */
 trait BuildInsertSqlCapableTrait
 {
     /**
-     * Builds a INSERT SQL query.
+     * Builds an INSERT SQL query.
      *
      * @since [*next-version*]
      *

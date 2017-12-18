@@ -57,7 +57,7 @@ trait PdoAwareTrait
     }
 
     /**
-     * Creates a new Dhii invalid argument exception.
+     * Creates a new invalid argument exception.
      *
      * @since [*next-version*]
      *
