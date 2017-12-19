@@ -42,12 +42,12 @@ class BuildInsertSqlCapableTraitTest extends TestCase
         // Simple, zero-escaping, mock implementations
         $mock->method('_escapeSqlReference')->willReturnArgument(0);
         $mock->method('_escapeSqlReferenceArray')->willReturnCallback(
-            function($input) {
+            function ($input) {
                 return implode(', ', $input);
             }
         );
         $mock->method('_normalizeString')->willReturnCallback(
-            function($input) {
+            function ($input) {
                 return strval($input);
             }
         );
@@ -83,32 +83,29 @@ class BuildInsertSqlCapableTraitTest extends TestCase
 
         $result = $reflect->_buildInsertSql(
             $table = 'test',
-            $columns = ['id', 'name', 'last_name'],
+            $columns = ['id', 'name', 'surname'],
             $rows = [
                 [
-                    'id'      => 1,
-                    'name'    => 'Miguel',
+                    'id' => 1,
+                    'name' => 'Miguel',
                     'surname' => 'Muscat',
                 ],
                 [
-                    'id'      => 2,
-                    'name'    => 'Anton',
+                    'id' => 2,
+                    'name' => 'Anton',
                     'surname' => 'Ukhanev',
                 ],
             ],
-            $columnMap = [
-                'surname' => 'last_name',
-            ],
             $valueHashMap = [
-                '1'      => ':123',
-                '2'      => ':456',
+                '1' => ':123',
+                '2' => ':456',
                 'Miguel' => ':321',
                 'Muscat' => ':654',
             ]
         );
 
         $this->assertEquals(
-            'INSERT INTO test (id, name, last_name) VALUES (:123, :321, :654), (:456, "Anton", "Ukhanev");',
+            'INSERT INTO test (id, name, surname) VALUES (:123, :321, :654), (:456, "Anton", "Ukhanev");',
             $result,
             'Retrieved and expected queries do not match.'
         );

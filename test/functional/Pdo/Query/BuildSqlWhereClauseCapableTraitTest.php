@@ -101,21 +101,18 @@ class BuildSqlWhereClauseCapableTraitTest extends TestCase
             ]
         );
         $rCondition = '`name` = :12345 AND `age` > 17';
-        $columnMap = [
-            'name' => 'user_name',
-        ];
         $valueHashMap = [
             'foobar' => ':12345',
-            'age'    => ':45678',
+            'age' => ':45678',
         ];
 
         $subject->expects($this->once())
                 ->method('_renderSqlCondition')
-                ->with($condition, $columnMap, $valueHashMap)
+                ->with($condition, $valueHashMap)
                 ->willReturn($rCondition);
 
-        $expected = 'WHERE ' . $rCondition;
-        $result = $reflect->_buildSqlWhereClause($condition, $columnMap, $valueHashMap);
+        $expected = 'WHERE '.$rCondition;
+        $result = $reflect->_buildSqlWhereClause($condition, $valueHashMap);
 
         $this->assertEquals($expected, $result, 'Expected and retrieved WHERE clauses are not the same.');
     }

@@ -24,7 +24,6 @@ trait BuildSelectSqlCapableTrait
      * @param array                           $tables         A list of names of tables to select from.
      * @param LogicalExpressionInterface[]    $joinConditions Optional list of JOIN conditions, keyed by table name.
      * @param LogicalExpressionInterface|null $whereCondition Optional WHERE condition.
-     * @param array                           $columnMap      Optional mapping of field names to column names.
      * @param array                           $valueHashMap   Optional map of value names and their hashes.
      *
      * @return string The built SQL query string.
@@ -34,7 +33,6 @@ trait BuildSelectSqlCapableTrait
         array $tables,
         array $joinConditions = [],
         LogicalExpressionInterface $whereCondition = null,
-        array $columnMap = [],
         array $valueHashMap = []
     ) {
         if (count($tables) === 0) {
@@ -51,8 +49,8 @@ trait BuildSelectSqlCapableTrait
             : '*';
 
         $tableList = $this->_escapeSqlReferenceArray($tables);
-        $joins = $this->_buildSqlJoins($joinConditions, $columnMap, $valueHashMap);
-        $where = $this->_buildSqlWhereClause($whereCondition, $columnMap, $valueHashMap);
+        $joins     = $this->_buildSqlJoins($joinConditions, $valueHashMap);
+        $where     = $this->_buildSqlWhereClause($whereCondition, $valueHashMap);
 
         $query = sprintf(
             'SELECT %1$s FROM %2$s %3$s %4$s;',
@@ -71,12 +69,11 @@ trait BuildSelectSqlCapableTrait
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface[]|Traversable $joinConditions A list of JOIN conditions, keyed by table name.
-     * @param string[]|Stringable[]                    $columnMap      Optional mapping of field names to column names.
      * @param string[]|Stringable[]                    $valueHashMap   Optional mapping of term names to their hashes.
      *
-     * @return string|String The built SQL JOIN clause.
+     * @return string|string The built SQL JOIN clause.
      */
-    abstract protected function _buildSqlJoins(array $joinConditions, array $columnMap = [], array $valueHashMap = []);
+    abstract protected function _buildSqlJoins(array $joinConditions, array $valueHashMap = []);
 
     /**
      * Builds the SQL WHERE clause query string portion.
@@ -84,14 +81,12 @@ trait BuildSelectSqlCapableTrait
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface|null $condition    Optional condition instance.
-     * @param array                           $columnMap    Optional mapping of field names to column names.
      * @param array                           $valueHashMap Optional map of value names and their hashes.
      *
      * @return string The SQL WHERE clause query portion.
      */
     abstract protected function _buildSqlWhereClause(
         LogicalExpressionInterface $condition = null,
-        array $columnMap = [],
         array $valueHashMap = []
     );
 

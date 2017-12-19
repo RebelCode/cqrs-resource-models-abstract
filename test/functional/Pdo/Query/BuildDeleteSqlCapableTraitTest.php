@@ -101,18 +101,14 @@ class BuildDeleteSqlCapableTraitTest extends TestCase
                 $this->createLogicalExpression('equals', ['verified', false]),
             ]
         );
-        $columnMap = [
-            'age'      => 'user_age',
-            'verified' => 'acc_verified',
-        ];
         $valueHashMap = [
-            '18'       => ':12345',
+            '18' => ':12345',
             'verified' => ':56789',
         ];
         $where = 'WHERE `user_age` < :12345 OR `acc_verified` = :56789';
         $subject->expects($this->once())
                 ->method('_buildSqlWhereClause')
-                ->with($condition, $columnMap, $valueHashMap)
+                ->with($condition, $valueHashMap)
                 ->willReturn($where);
 
         $table = uniqid('table');
@@ -121,7 +117,6 @@ class BuildDeleteSqlCapableTraitTest extends TestCase
         $result = $reflect->_buildDeleteSql(
             $table,
             $condition,
-            $columnMap,
             $valueHashMap
         );
 

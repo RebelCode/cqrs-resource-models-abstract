@@ -113,14 +113,8 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $columns = ['id', 'name', 'age'];
         $columnsList = 'id, name, age';
 
-        $columnMap = [
-            'authorId'  => 'author_id',
-            'countryId' => 'country_id',
-            'age'       => 'user_age',
-            'verified'  => 'acc_verified',
-        ];
         $valueHashMap = [
-            '18'    => ':12345',
+            '18' => ':12345',
             'false' => ':56789',
         ];
 
@@ -131,14 +125,14 @@ class BuildSelectSqlCapableTraitTest extends TestCase
                 $this->createLogicalExpression('equals', ['verified', false]),
             ]
         );
-        $where = 'WHERE user_age < :12345 AND acc_verified = :56789';
+        $where = 'WHERE age < :12345 AND verified = :56789';
         $subject->expects($this->once())
                 ->method('_buildSqlWhereClause')
-                ->with($condition, $columnMap, $valueHashMap)
+                ->with($condition, $valueHashMap)
                 ->willReturn($where);
 
         $joinConditions = [
-            'posts'     => $this->createLogicalExpression(
+            'posts' => $this->createLogicalExpression(
                 'equals',
                 [
                     $this->createLogicalExpression('table_column', ['test', 'id']),
@@ -156,11 +150,11 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $joins = 'JOIN posts ON test.id = posts.author_id JOIN posts ON test.country_id = countries.id';
         $subject->expects($this->once())
                 ->method('_buildSqlJoins')
-                ->with($joinConditions, $columnMap, $valueHashMap)
+                ->with($joinConditions, $valueHashMap)
                 ->willReturn($joins);
 
         $expected = "SELECT $columnsList FROM $tablesList $joins $where;";
-        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $columnMap, $valueHashMap);
+        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $valueHashMap);
 
         $this->assertEquals($expected, $result, 'Expected and retrieved queries do not match.');
     }
@@ -181,12 +175,8 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $columns = ['id', 'name', 'age'];
         $columnsList = 'id, name, age';
 
-        $columnMap = [
-            'age'      => 'user_age',
-            'verified' => 'acc_verified',
-        ];
         $valueHashMap = [
-            '18'    => ':12345',
+            '18' => ':12345',
             'false' => ':56789',
         ];
 
@@ -197,21 +187,21 @@ class BuildSelectSqlCapableTraitTest extends TestCase
                 $this->createLogicalExpression('equals', ['verified', false]),
             ]
         );
-        $where = 'WHERE user_age < :12345 AND acc_verified = :56789';
+        $where = 'WHERE age < :12345 AND verified = :56789';
         $subject->expects($this->once())
                 ->method('_buildSqlWhereClause')
-                ->with($condition, $columnMap, $valueHashMap)
+                ->with($condition, $valueHashMap)
                 ->willReturn($where);
 
         $joinConditions = [];
         $joins = '';
         $subject->expects($this->once())
                 ->method('_buildSqlJoins')
-                ->with($joinConditions, $columnMap, $valueHashMap)
+                ->with($joinConditions, $valueHashMap)
                 ->willReturn($joins);
 
         $expected = "SELECT $columnsList FROM $tablesList $joins $where;";
-        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $columnMap, $valueHashMap);
+        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $valueHashMap);
 
         $this->assertEquals($expected, $result, 'Expected and retrieved queries do not match.');
     }
@@ -232,12 +222,8 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $columns = ['id', 'name', 'age'];
         $columnsList = 'id, name, age';
 
-        $columnMap = [
-            'authorId'  => 'author_id',
-            'countryId' => 'country_id',
-        ];
         $valueHashMap = [
-            '18'    => ':12345',
+            '18' => ':12345',
             'false' => ':56789',
         ];
 
@@ -245,21 +231,21 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $where = '';
         $subject->expects($this->once())
                 ->method('_buildSqlWhereClause')
-                ->with($condition, $columnMap, $valueHashMap)
+                ->with($condition, $valueHashMap)
                 ->willReturn($where);
 
         $joinConditions = [
-            'posts'     => $this->createLogicalExpression(
+            'posts' => $this->createLogicalExpression(
                 'equals',
                 [
                     $this->createLogicalExpression('table_column', ['test', 'id']),
-                    $this->createLogicalExpression('table_column', ['posts', 'authorId']),
+                    $this->createLogicalExpression('table_column', ['posts', 'author_id']),
                 ]
             ),
             'countries' => $this->createLogicalExpression(
                 'equals',
                 [
-                    $this->createLogicalExpression('table_column', ['test', 'countryId']),
+                    $this->createLogicalExpression('table_column', ['test', 'country_id']),
                     $this->createLogicalExpression('table_column', ['countries', 'id']),
                 ]
             ),
@@ -267,11 +253,11 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $joins = 'JOIN posts ON test.id = posts.author_id JOIN posts ON test.country_id = countries.id';
         $subject->expects($this->once())
                 ->method('_buildSqlJoins')
-                ->with($joinConditions, $columnMap, $valueHashMap)
+                ->with($joinConditions, $valueHashMap)
                 ->willReturn($joins);
 
         $expected = "SELECT $columnsList FROM $tablesList $joins $where;";
-        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $columnMap, $valueHashMap);
+        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $valueHashMap);
 
         $this->assertEquals($expected, $result, 'Expected and retrieved queries do not match.');
     }
@@ -291,25 +277,24 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $columns = ['id', 'name', 'age'];
         $columnsList = 'id, name, age';
 
-        $columnMap = [];
         $valueHashMap = [];
 
         $condition = null;
         $where = '';
         $subject->expects($this->once())
                 ->method('_buildSqlWhereClause')
-                ->with($condition, $columnMap, $valueHashMap)
+                ->with($condition, $valueHashMap)
                 ->willReturn($where);
 
         $joinConditions = [];
         $joins = '';
         $subject->expects($this->once())
                 ->method('_buildSqlJoins')
-                ->with($joinConditions, $columnMap, $valueHashMap)
+                ->with($joinConditions, $valueHashMap)
                 ->willReturn($joins);
 
         $expected = "SELECT $columnsList FROM $tablesList $joins $where;";
-        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $columnMap, $valueHashMap);
+        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $valueHashMap);
 
         $this->assertEquals($expected, $result, 'Expected and retrieved queries do not match.');
     }
@@ -329,25 +314,24 @@ class BuildSelectSqlCapableTraitTest extends TestCase
         $columns = [];
         $columnsList = '*';
 
-        $columnMap = [];
         $valueHashMap = [];
 
         $condition = null;
         $where = '';
         $subject->expects($this->once())
                 ->method('_buildSqlWhereClause')
-                ->with($condition, $columnMap, $valueHashMap)
+                ->with($condition, $valueHashMap)
                 ->willReturn($where);
 
         $joinConditions = [];
         $joins = '';
         $subject->expects($this->once())
                 ->method('_buildSqlJoins')
-                ->with($joinConditions, $columnMap, $valueHashMap)
+                ->with($joinConditions, $valueHashMap)
                 ->willReturn($joins);
 
         $expected = "SELECT $columnsList FROM $tablesList $joins $where;";
-        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $columnMap, $valueHashMap);
+        $result = $reflect->_buildSelectSql($columns, $tables, $joinConditions, $condition, $valueHashMap);
 
         $this->assertEquals($expected, $result, 'Expected and retrieved queries do not match.');
     }

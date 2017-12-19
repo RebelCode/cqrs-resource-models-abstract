@@ -20,7 +20,6 @@ trait BuildDeleteSqlCapableTrait
      *
      * @param string|StringableInterface      $table        The name of the table to delete from.
      * @param LogicalExpressionInterface|null $condition    Optional condition that records must satisfy to be deleted.
-     * @param string[]|Stringable[]           $columnMap    Optional mapping of field names to column names.
      * @param string[]|Stringable[]           $valueHashMap Optional mapping of term names to their hashes
      *
      * @return string The built DELETE query.
@@ -28,11 +27,10 @@ trait BuildDeleteSqlCapableTrait
     protected function _buildDeleteSql(
         $table,
         LogicalExpressionInterface $condition = null,
-        array $columnMap = [],
         array $valueHashMap = []
     ) {
         $escTable = $this->_escapeSqlReference($table);
-        $where = $this->_buildSqlWhereClause($condition, $columnMap, $valueHashMap);
+        $where    = $this->_buildSqlWhereClause($condition, $valueHashMap);
 
         $query = sprintf('DELETE FROM %1$s %2$s', $escTable, $where);
         $query = sprintf('%s;', trim($query));
@@ -46,14 +44,12 @@ trait BuildDeleteSqlCapableTrait
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface|null $condition    Optional condition instance.
-     * @param string[]|Stringable[]           $columnMap    Optional mapping of field names to column names.
      * @param string[]|Stringable[]           $valueHashMap Optional mapping of term names to their hashes.
      *
      * @return string The SQL WHERE clause query portion.
      */
     abstract protected function _buildSqlWhereClause(
         LogicalExpressionInterface $condition = null,
-        array $columnMap = [],
         array $valueHashMap = []
     );
 

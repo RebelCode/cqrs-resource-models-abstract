@@ -23,19 +23,15 @@ trait RenderSqlConditionCapableTrait
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface $condition    The condition to render.
-     * @param string[]|Stringable[]      $columnMap    Optional mapping of field names to column names.
      * @param string[]|Stringable[]      $valueHashMap Optional mapping of term names to their hashes.
      *
-     * @return string|Stringable The rendered condition.
-     *
-     * @throws RendererExceptionInterface If an error occurred while rendering.
+     * @throws RendererExceptionInterface       If an error occurred while rendering.
      * @throws TemplateRenderExceptionInterface If the renderer failed to render the expression and context.
+     *
+     * @return string|Stringable The rendered condition.
      */
-    protected function _renderSqlCondition(
-        LogicalExpressionInterface $condition,
-        array $columnMap = [],
-        array $valueHashMap = []
-    ) {
+    protected function _renderSqlCondition(LogicalExpressionInterface $condition, array $valueHashMap = [])
+    {
         $template = $this->_getSqlConditionTemplate($condition);
 
         if ($template === null) {

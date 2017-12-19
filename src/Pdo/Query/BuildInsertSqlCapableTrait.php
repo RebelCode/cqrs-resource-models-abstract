@@ -22,7 +22,6 @@ trait BuildInsertSqlCapableTrait
      * @param string[]|Stringable[] $columns      A list of columns names. The order is preserved in the built query.
      * @param array                 $rowSet       A list containing record data maps, mapping column names to row
      *                                            values.
-     * @param array                 $columnMap    Optional mapping of field names to column names.
      * @param array                 $valueHashMap Optional map of value names and their hashes.
      *
      * @return string The built INSERT query.
@@ -31,12 +30,11 @@ trait BuildInsertSqlCapableTrait
         $table,
         array $columns,
         array $rowSet,
-        array $columnMap = [],
         array $valueHashMap = []
     ) {
         $tableName = $this->_escapeSqlReference($table);
         $columnsList = $this->_escapeSqlReferenceArray($columns);
-        $values = $this->_buildSqlValuesList($columns, $rowSet, $columnMap, $valueHashMap);
+        $values      = $this->_buildSqlValuesList($columns, $rowSet, $valueHashMap);
 
         $query = sprintf(
             'INSERT INTO %1$s (%2$s) %3$s',
@@ -56,7 +54,6 @@ trait BuildInsertSqlCapableTrait
      * @param string[]|Stringable[] $columns      A list of columns names. The order is preserved in the built query.
      * @param array                 $rowSet       A list containing record data maps, mapping column names to row
      *                                            values.
-     * @param array                 $columnMap    Optional mapping of field names to column names.
      * @param array                 $valueHashMap Optional map of value names and their hashes.
      *
      * @return string The built VALUES list or an empty string if the row set has no entries.
@@ -64,7 +61,6 @@ trait BuildInsertSqlCapableTrait
     protected function _buildSqlValuesList(
         array $columns,
         array $rowSet,
-        array $columnMap = [],
         array $valueHashMap = []
     ) {
         if (count($rowSet) === 0) {
@@ -74,7 +70,7 @@ trait BuildInsertSqlCapableTrait
         $values = [];
 
         foreach ($rowSet as $_rowData) {
-            $values[] = $this->_buildSqlRowValues($columns, $_rowData, $columnMap, $valueHashMap);
+            $values[] = $this->_buildSqlRowValues($columns, $_rowData, $valueHashMap);
         }
 
         return sprintf('VALUES %s', implode(', ', $values));
@@ -87,7 +83,6 @@ trait BuildInsertSqlCapableTrait
      *
      * @param array $columns      The list of columns, used to sort exclude non-database row data.
      * @param array $rowData      The row data, as a map of column names to row values.
-     * @param array $columnMap    Optional mapping of field names to column names.
      * @param array $valueHashMap Optional map of value names and their hashes.
      *
      * @return string The build row values as a comma separated list in parenthesis.
@@ -95,19 +90,16 @@ trait BuildInsertSqlCapableTrait
     protected function _buildSqlRowValues(
         array $columns,
         array $rowData,
-        array $columnMap = [],
         array $valueHashMap = []
     ) {
         $data = [];
 
-        foreach ($rowData as $_key => $_value) {
-            $_columnName = isset($columnMap[$_key])
-                ? $columnMap[$_key]
-                : $_key;
-
-            if (!in_array($_columnName, $columns)) {
+        foreach ($columns as $_columnName) {
+            if (!isset($rowData[$_columnName])) {
                 continue;
             }
+
+            $_value = $rowData[$_columnName];
 
             $_valueKey = $this->_normalizeString($_value);
 

@@ -21,21 +21,22 @@ trait BuildSqlWhereClauseCapableTrait
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface|null $condition    Optional condition instance.
-     * @param string[]|Stringable[]           $columnMap    Optional mapping of field names to column names.
      * @param string[]|Stringable[]           $valueHashMap Optional mapping of term names to their hashes.
+     *
+     * @throws RendererExceptionInterface       If an error occurred while rendering.
+     * @throws TemplateRenderExceptionInterface If the renderer failed to render the expression and context.
      *
      * @return string The SQL WHERE clause query portion.
      */
     protected function _buildSqlWhereClause(
         LogicalExpressionInterface $condition = null,
-        array $columnMap = [],
         array $valueHashMap = []
     ) {
         if ($condition === null) {
             return '';
         }
 
-        $rendered = $this->_renderSqlCondition($condition, $columnMap, $valueHashMap);
+        $rendered = $this->_renderSqlCondition($condition, $valueHashMap);
         $rendered = $this->_normalizeString($rendered);
 
         return sprintf('WHERE %s', $rendered);
@@ -47,19 +48,14 @@ trait BuildSqlWhereClauseCapableTrait
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface $condition    The condition to render.
-     * @param string[]|Stringable[]      $columnMap    Optional mapping of field names to column names.
      * @param string[]|Stringable[]      $valueHashMap Optional mapping of term names to their hashes.
      *
-     * @return string|Stringable The rendered condition.
-     *
-     * @throws RendererExceptionInterface If an error occurred while rendering.
+     * @throws RendererExceptionInterface       If an error occurred while rendering.
      * @throws TemplateRenderExceptionInterface If the renderer failed to render the expression and context.
+     *
+     * @return string|Stringable The rendered condition.
      */
-    abstract protected function _renderSqlCondition(
-        LogicalExpressionInterface $condition,
-        array $columnMap = [],
-        array $valueHashMap = []
-    );
+    abstract protected function _renderSqlCondition(LogicalExpressionInterface $condition, array $valueHashMap = []);
 
     /**
      * Normalizes a value to its string representation.

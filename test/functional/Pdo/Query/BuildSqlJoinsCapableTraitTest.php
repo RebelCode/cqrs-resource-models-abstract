@@ -135,10 +135,6 @@ class BuildSqlJoinsCapableTraitTest extends TestCase
                 ]
             ),
         ];
-        $columnMap = [
-            'authorId'  => 'author_id',
-            'countryId' => 'country_id',
-        ];
         $valueHashMap = [];
 
         $expectedCondition1 = '`test`.`id` = `posts`.`author_id`';
@@ -153,7 +149,7 @@ class BuildSqlJoinsCapableTraitTest extends TestCase
                     $expectedCondition2
                 );
 
-        $result = $reflect->_buildSqlJoins($joinConditions, $columnMap, $valueHashMap);
+        $result = $reflect->_buildSqlJoins($joinConditions, $valueHashMap);
         $expected = sprintf(
             'INNER JOIN `posts` ON %1$s INNER JOIN `countries` ON %2$s',
             $expectedCondition1,
