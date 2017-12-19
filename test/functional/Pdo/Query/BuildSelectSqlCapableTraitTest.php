@@ -48,12 +48,12 @@ class BuildSelectSqlCapableTraitTest extends TestCase
 
         $mock = $builder->getMockForTrait();
         $mock->method('_escapeSqlReferenceArray')->willReturnCallback(
-            function($array) {
+            function ($array) {
                 return implode(', ', $array);
             }
         );
         $mock->method('_createInvalidArgumentException')->willReturnCallback(
-            function($m, $c, $p) {
+            function ($m, $c, $p) {
                 return new InvalidArgumentException($m, $c, $p);
             }
         );

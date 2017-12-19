@@ -32,7 +32,7 @@ trait BuildInsertSqlCapableTrait
         array $rowSet,
         array $valueHashMap = []
     ) {
-        $tableName = $this->_escapeSqlReference($table);
+        $tableName   = $this->_escapeSqlReference($table);
         $columnsList = $this->_escapeSqlReferenceArray($columns);
         $values      = $this->_buildSqlValuesList($columns, $rowSet, $valueHashMap);
 

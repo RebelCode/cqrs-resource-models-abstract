@@ -3,7 +3,6 @@
 namespace RebelCode\Storage\Resource\FuncTest;
 
 use PDO;
-use PDOStatement;
 use PHPUnit_Framework_MockObject_MockObject;
 use Xpmock\TestCase;
 

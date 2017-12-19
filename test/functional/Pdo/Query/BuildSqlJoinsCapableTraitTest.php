@@ -42,12 +42,12 @@ class BuildSqlJoinsCapableTraitTest extends TestCase
 
         $mock = $builder->getMockForTrait();
         $mock->method('_normalizeString')->willReturnCallback(
-            function($input) {
+            function ($input) {
                 return strval($input);
             }
         );
         $mock->method('_escapeSqlReference')->willReturnCallback(
-            function($input) {
+            function ($input) {
                 return sprintf('`%s`', $input);
             }
         );
@@ -120,7 +120,7 @@ class BuildSqlJoinsCapableTraitTest extends TestCase
         $reflect = $this->reflect($subject);
 
         $joinConditions = [
-            'posts'     => $this->createLogicalExpression(
+            'posts' => $this->createLogicalExpression(
                 'equals',
                 [
                     $this->createExpression('table_column', ['test', 'id']),

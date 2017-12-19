@@ -34,7 +34,7 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
 
         $mock = $builder->getMockForTrait();
         $mock->method('_normalizeString')->willReturnCallback(
-            function($arg) {
+            function ($arg) {
                 return strval($arg);
             }
         );
