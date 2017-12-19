@@ -17,7 +17,7 @@ class EscapeSqlReferenceCapableTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Sql\Query\EscapeSqlReferenceCapableTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\Query\EscapeSqlReferenceCapableTrait';
 
     /**
      * Creates a new instance of the test subject.

@@ -3,6 +3,7 @@
 namespace RebelCode\Storage\Resource\FuncTest;
 
 use PDO;
+use PDOStatement;
 use PHPUnit_Framework_MockObject_MockObject;
 use Xpmock\TestCase;
 
@@ -70,13 +71,17 @@ class ExecutePdoQueryCapableTraitTest extends TestCase
             uniqid('var-') => uniqid('value-'),
         ];
 
-        $statement = $this->mock('PDOStatement')
-            ->execute([$args], null, $this->once())
-            ->new();
+        $statement = $this->getMock('\PDOStatement', ['execute']);
+        $statement->expects($this->once())
+            ->method('execute')
+            ->with($args)
+            ->willReturn(null);
 
-        $pdo = $this->mock('PDO')
-            ->prepare([$query], $statement, $this->once())
-            ->new();
+        $pdo = $this->getMock('\PDO', ['prepare'], ['sqlite::memory:']);
+        $pdo->expects($this->once())
+            ->method('prepare')
+            ->with($query)
+            ->willReturn($statement);
 
         $subject = $this->createInstance($pdo);
         $reflect = $this->reflect($subject);
