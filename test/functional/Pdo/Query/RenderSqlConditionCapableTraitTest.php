@@ -3,7 +3,8 @@
 namespace RebelCode\Storage\Resource\Pdo\Query\FuncTest;
 
 use Dhii\Expression\LogicalExpressionInterface;
-use Dhii\Output\TemplateInterface;
+use Dhii\Storage\Resource\Sql\EntityFieldInterface;
+use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use Xpmock\TestCase;
@@ -39,6 +40,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                                 $methods,
                                 [
                                     '_getSqlConditionTemplate',
+                                    '_getFieldColumnMap',
                                     '_createInvalidArgumentException',
                                     '__',
                                 ]
@@ -47,7 +49,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
 
         $mock = $builder->getMockForTrait();
         $mock->method('_createInvalidArgumentException')->willReturnCallback(
-            function($m, $c, $p) {
+            function ($m, $c, $p) {
                 return new InvalidArgumentException($m, $c, $p);
             }
         );
@@ -77,19 +79,38 @@ class RenderSqlConditionCapableTraitTest extends TestCase
     }
 
     /**
+     * Creates an entity field mock instance.
+     *
+     * @since [*next-version*]
+     *
+     * @param string|Stringable $entity The entity name.
+     * @param string|Stringable $field  the field name.
+     *
+     * @return EntityFieldInterface
+     */
+    public function createEntityField($entity, $field)
+    {
+        return $this->mock('Dhii\Storage\Resource\Sql\EntityFieldInterface')
+                    ->getEntityName($entity)
+                    ->getFieldName($field)
+                    ->new();
+    }
+
+    /**
      * Creates a template mock instance.
      *
      * @since [*next-version*]
      *
-     * @param string $render The output to be rendered by the template.
-     *
-     * @return TemplateInterface The created expression instance.
+     * @return PHPUnit_Framework_MockObject_MockObject
      */
-    public function createTemplate($render)
+    public function createTemplate()
     {
-        return $this->mock('Dhii\Output\TemplateInterface')
-                    ->render($render)
-                    ->new();
+        $builder = $this->getMockBuilder('Dhii\Output\TemplateInterface')
+                        ->setMethods(['render']);
+
+        $mock = $builder->getMockForAbstractClass();
+
+        return $mock;
     }
 
     /**
@@ -118,25 +139,35 @@ class RenderSqlConditionCapableTraitTest extends TestCase
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
+        // Method args
         $condition = $this->createLogicalExpression('test', []);
-        $columnMap = [
-            'a' => 'b',
-            'c' => 'd',
-        ];
         $valueHashMap = [
             'e' => ':123',
             'f' => ':456',
         ];
 
+        $subject->expects($this->once())
+                ->method('_getFieldColumnMap')
+                ->willReturn(
+                    $columnMap = [
+                        'a' => $this->createEntityField('t', 'col_a'),
+                        'c' => $this->createEntityField('t', 'col_c'),
+                    ]
+                );
+
         $output = uniqid('output-');
-        $renderer = $this->createTemplate($output);
+        $template = $this->createTemplate();
+        $template->expects($this->once())
+                 ->method('render')
+                 ->with([$condition, $columnMap, $valueHashMap])
+                 ->willReturn($output);
 
         $subject->expects($this->once())
                 ->method('_getSqlConditionTemplate')
                 ->with($condition)
-                ->willReturn($renderer);
+                ->willReturn($template);
 
-        $result = $reflect->_renderSqlCondition($condition, $columnMap, $valueHashMap);
+        $result = $reflect->_renderSqlCondition($condition, $valueHashMap);
 
         $this->assertEquals($result, $output, 'Expected and retrieved outputs are not the same.');
     }
@@ -151,11 +182,8 @@ class RenderSqlConditionCapableTraitTest extends TestCase
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
+        // Method args
         $condition = $this->createLogicalExpression('test', []);
-        $columnMap = [
-            'a' => 'b',
-            'c' => 'd',
-        ];
         $valueHashMap = [
             'e' => ':123',
             'f' => ':456',
@@ -167,6 +195,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                 ->willReturn(null);
 
         $this->setExpectedException('InvalidArgumentException');
-        $reflect->_renderSqlCondition($condition, $columnMap, $valueHashMap);
+
+        $reflect->_renderSqlCondition($condition, $valueHashMap);
     }
 }
