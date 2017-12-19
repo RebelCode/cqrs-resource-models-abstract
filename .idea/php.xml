@@ -52,6 +52,7 @@
       <path value="$PROJECT_DIR$/vendor/dhii/expression-interface" />
       <path value="$PROJECT_DIR$/vendor/dhii/evaluable-interface" />
       <path value="$PROJECT_DIR$/vendor/dhii/output-renderer-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/sql-interface" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="5.4.0" />
