@@ -40,7 +40,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                                 $methods,
                                 [
                                     '_getSqlConditionTemplate',
-                                    '_getFieldColumnMap',
+                                    '_getSqlFieldColumnMap',
                                     '_createInvalidArgumentException',
                                     '__',
                                 ]
@@ -147,7 +147,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
         ];
 
         $subject->expects($this->once())
-                ->method('_getFieldColumnMap')
+                ->method('_getSqlFieldColumnMap')
                 ->willReturn(
                     $columnMap = [
                         'a' => $this->createEntityField('t', 'col_a'),

@@ -44,7 +44,7 @@ trait RenderSqlConditionCapableTrait
             );
         }
 
-        $columnMap = $this->_getFieldColumnMap();
+        $columnMap = $this->_getSqlFieldColumnMap();
         $context   = [$condition, $columnMap, $valueHashMap];
 
         return $template->render($context);
@@ -69,7 +69,7 @@ trait RenderSqlConditionCapableTrait
      *
      * @return EntityFieldInterface[] A map of field names mapping to entity field instances.
      */
-    abstract protected function _getFieldColumnMap();
+    abstract protected function _getSqlFieldColumnMap();
 
     /**
      * Creates a new Dhii invalid argument exception.
