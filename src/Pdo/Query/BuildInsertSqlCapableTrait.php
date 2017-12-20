@@ -20,8 +20,7 @@ trait BuildInsertSqlCapableTrait
      *
      * @param string|Stringable     $table        The name of the table to insert into.
      * @param string[]|Stringable[] $columns      A list of columns names. The order is preserved in the built query.
-     * @param array                 $rowSet       A list containing record data maps, mapping column names to row
-     *                                            values.
+     * @param array                 $rowSet       The record data as a map of column names to values.
      * @param array                 $valueHashMap Optional map of value names and their hashes.
      *
      * @return string The built INSERT query.
