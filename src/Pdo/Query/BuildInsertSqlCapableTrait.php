@@ -80,7 +80,7 @@ trait BuildInsertSqlCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array $columns      The list of columns, used to sort exclude non-database row data.
+     * @param array $columns      The list of columns, used to sort and exclude non-database row data.
      * @param array $rowData      The row data, as a map of column names to row values.
      * @param array $valueHashMap Optional map of value names and their hashes.
      *
