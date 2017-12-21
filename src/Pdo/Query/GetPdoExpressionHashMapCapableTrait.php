@@ -37,7 +37,7 @@ trait GetPdoExpressionHashMapCapableTrait
             $_termStr = $this->_normalizeString($_term);
 
             if (!in_array($_termStr, $ignore)) {
-                $values[$_termStr] = $this->_getPdoTermHash($_termStr);
+                $values[$_termStr] = $this->_getPdoValueHashString($_termStr);
             }
         }
 
@@ -45,18 +45,15 @@ trait GetPdoExpressionHashMapCapableTrait
     }
 
     /**
-     * Hashes an expression term in PDO parameter format.
+     * Hashes a query value for use in PDO queries when parameter binding.
      *
      * @since [*next-version*]
      *
-     * @param string $term The term name to hash.
+     * @param string $value The value to hash.
      *
      * @return string The string hash.
      */
-    protected function _getPdoTermHash($term)
-    {
-        return ':' . hash('crc32b', $term);
-    }
+    abstract protected function _getPdoValueHashString($value);
 
     /**
      * Normalizes a value to its string representation.

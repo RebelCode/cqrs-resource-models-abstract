@@ -30,9 +30,10 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
     public function createInstance()
     {
         $builder = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
-                        ->setMethods(['_normalizeString']);
+                        ->setMethods(['_normalizeString', '_getPdoValueHashString']);
 
         $mock = $builder->getMockForTrait();
+        $mock->method('_getPdoValueHashString')->willReturnArgument(0);
         $mock->method('_normalizeString')->willReturnCallback(
             function ($arg) {
                 return strval($arg);
