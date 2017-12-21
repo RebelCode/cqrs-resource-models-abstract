@@ -98,10 +98,10 @@ trait BuildInsertSqlCapableTrait
                 continue;
             }
 
+            // Get row data for this column
             $_value = $rowData[$_columnName];
-
             $_valueKey = $this->_normalizeString($_value);
-
+            // Use hash instead of value if available
             $_realValue = isset($valueHashMap[$_valueKey])
                 ? $valueHashMap[$_valueKey]
                 : $this->_sanitizeSqlValue($_value);
