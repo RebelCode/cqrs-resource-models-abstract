@@ -47,7 +47,7 @@ trait PdoInsertCapableTrait
      *
      * @return array The generated value hash map, mapping values to their respective hashes.
      */
-    protected function _getSqlInsertValueHashMap($record)
+    protected function _getSqlInsertValueHashMap(array $record)
     {
         $map = [];
 
