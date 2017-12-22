@@ -114,7 +114,7 @@ trait PdoInsertCapableTrait
     abstract protected function _getSqlInsertColumnNames();
 
     /**
-     * Retrieves the fields-to-columns mapping.
+     * Retrieves the fields-to-columns mapping for use in INSERT SQL queries.
      *
      * @since [*next-version*]
      *
