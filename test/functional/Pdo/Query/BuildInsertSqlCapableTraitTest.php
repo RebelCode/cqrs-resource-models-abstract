@@ -2,6 +2,7 @@
 
 namespace RebelCode\Storage\Resource\Pdo\Query\FuncTest;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use Xpmock\TestCase;
 
@@ -34,6 +35,8 @@ class BuildInsertSqlCapableTraitTest extends TestCase
                                 '_escapeSqlReference',
                                 '_escapeSqlReferenceArray',
                                 '_normalizeString',
+                                '_createInvalidArgumentException',
+                                '__',
                             ]
                         );
 
@@ -51,6 +54,12 @@ class BuildInsertSqlCapableTraitTest extends TestCase
                 return strval($input);
             }
         );
+        $mock->method('_createInvalidArgumentException')->willReturnCallback(
+            function ($m, $c, $p) {
+                return new InvalidArgumentException($m, $c, $p);
+            }
+        );
+        $mock->method('__')->willReturnArgument(0);
 
         return $mock;
     }
@@ -121,16 +130,12 @@ class BuildInsertSqlCapableTraitTest extends TestCase
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
-        $result = $reflect->_buildInsertSql(
+        $this->setExpectedException('InvalidArgumentException');
+
+        $reflect->_buildInsertSql(
             $table = 'test',
             $columns = ['id', 'name', 'surname'],
             $rows = []
-        );
-
-        $this->assertEquals(
-            'INSERT INTO test (id, name, surname);',
-            $result,
-            'Retrieved and expected queries do not match.'
         );
     }
 }
