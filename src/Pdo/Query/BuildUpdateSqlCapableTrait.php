@@ -16,7 +16,7 @@ use InvalidArgumentException;
 trait BuildUpdateSqlCapableTrait
 {
     /**
-     * Builds a INSERT SQL query.
+     * Builds a UPDATE SQL query.
      *
      * @since [*next-version*]
      *
@@ -25,9 +25,9 @@ trait BuildUpdateSqlCapableTrait
      * @param LogicalExpressionInterface|null $condition    Optional condition that records must satisfy to be updated.
      * @param array                           $valueHashMap Optional map of value names and their hashes.
      *
-     * @return string The built INSERT query.
-     *
      * @throws InvalidArgumentException If the change set is empty.
+     *
+     * @return string The built UPDATE query.
      */
     protected function _buildUpdateSql(
         $table,
