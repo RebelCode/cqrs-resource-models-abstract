@@ -33,7 +33,7 @@ trait BuildUpdateSqlCapableTrait
         $table,
         array $changeSet,
         LogicalExpressionInterface $condition = null,
-        array $valueHashMap
+        array $valueHashMap = null
     ) {
         if (count($changeSet) === 0) {
             throw $this->_createInvalidArgumentException(
