@@ -2,7 +2,6 @@
 
 namespace RebelCode\Storage\Resource\Pdo;
 
-use RebelCode\Storage\Resource\Pdo\Query\EscapeSqlReferenceCapableTrait;
 use RebelCode\Storage\Resource\Pdo\Query\ExecutePdoQueryCapableTrait;
 
 /**
@@ -25,11 +24,4 @@ abstract class AbstractPdoResourceModel
      * @since [*next-version*]
      */
     use ExecutePdoQueryCapableTrait;
-
-    /*
-     * Provides SQL reference escaping functionality.
-     *
-     * @since [*next-version*]
-     */
-    use EscapeSqlReferenceCapableTrait;
 }
