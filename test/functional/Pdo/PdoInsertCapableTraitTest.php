@@ -107,7 +107,6 @@ class PdoInsertCapableTraitTest extends TestCase
             ->getMockForAbstractClass();
         $subject->method('_executePdoQuery')->willReturn($statement);
 
-        // The expectations ARE the test
         $subject->expects($this->once())
                 ->method('_buildInsertSql')
                 ->with($table, $cols, $rowSet, $this->anything())
@@ -117,6 +116,8 @@ class PdoInsertCapableTraitTest extends TestCase
             ->method('execute')
             ->with($this->isType('array'));
 
-        $reflect->_insert($rowSet);
+        $result = $reflect->_insert($rowSet);
+
+        $this->assertSame($statement, $result, 'Retrieved result is not the PDO statement instance.');
     }
 }
