@@ -5,7 +5,6 @@ namespace RebelCode\Storage\Resource\Pdo\FuncTest;
 use Dhii\Expression\LogicalExpressionInterface;
 use Dhii\Storage\Resource\Sql\EntityFieldInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
-use PDO;
 use PHPUnit_Framework_MockObject_MockObject;
 use Xpmock\TestCase;
 
@@ -53,7 +52,7 @@ class PdoSelectCapableTraitTest extends TestCase
 
         $mock = $builder->getMockForTrait();
         $mock->method('_normalizeString')->willReturn(
-            function ($input) {
+            function($input) {
                 return strval($input);
             }
         );
@@ -80,31 +79,6 @@ class PdoSelectCapableTraitTest extends TestCase
                     ->getTerms($terms)
                     ->isNegated($negated)
                     ->new();
-    }
-
-    /**
-     * Creates a testing database environment.
-     *
-     * @since [*next-version*]
-     *
-     * @return PDO
-     */
-    public function createDatabase()
-    {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $pdo->exec('CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY_KEY, `name` TEXT, `age` INTEGER)');
-        $pdo->exec('INSERT INTO `users` (`id`, `name`, `age`) VALUES (1, "foo", 15)');
-        $pdo->exec('INSERT INTO `users` (`id`, `name`, `age`) VALUES (2, "bar", 22)');
-        $pdo->exec('INSERT INTO `users` (`id`, `name`, `age`) VALUES (4, "test", 19)');
-
-        $pdo->exec('CREATE TABLE `msgs` (`id` INTEGER PRIMARY KEY, `user_id` INTEGER, `content` TEXT)');
-        $pdo->exec('INSERT INTO `msgs` (`id`, `user_id`, `content`) VALUES (1, 2, "hello world")');
-        $pdo->exec('INSERT INTO `msgs` (`id`, `user_id`, `content`) VALUES (5, 2, "a message!")');
-        $pdo->exec('INSERT INTO `msgs` (`id`, `user_id`, `content`) VALUES (6, 4, "tree(3)")');
-
-        return $pdo;
     }
 
     /**
@@ -150,7 +124,6 @@ class PdoSelectCapableTraitTest extends TestCase
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
-        $pdo = $this->createDatabase();
 
         $condition = null;
         $joins = [];
@@ -166,22 +139,20 @@ class PdoSelectCapableTraitTest extends TestCase
                 ->with($cols, $tables, $joins, $condition, $vhm)
                 ->willReturn('SELECT `id`, `name` FROM `users`');
 
-        $subject->method('_executePdoQuery')
-                ->willReturnCallback(
-                    function ($query) use ($pdo) {
-                        $statement = $pdo->prepare($query);
-                        $statement->execute();
-
-                        return $statement;
-                    }
-                );
-
-        $result = $reflect->_select();
         $expected = [
             ['id' => '1', 'name' => 'foo'],
             ['id' => '2', 'name' => 'bar'],
             ['id' => '4', 'name' => 'test'],
         ];
+
+        $statement = $this->getMockBuilder('\PDOStatement')
+                          ->setMethods(['execute', 'fetchAll'])
+                          ->getMock();
+
+        $statement->method('fetchAll')->willReturn($expected);
+        $subject->method('_executePdoQuery')->willReturn($statement);
+
+        $result = $reflect->_select();
 
         $this->assertEquals($expected, $result, 'Expected and retrieved results do not match');
     }
@@ -195,7 +166,6 @@ class PdoSelectCapableTraitTest extends TestCase
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
-        $pdo = $this->createDatabase();
 
         $condition = $this->createLogicalExpression('greater', ['age', 18]);
         $joins = [];
@@ -211,21 +181,18 @@ class PdoSelectCapableTraitTest extends TestCase
                 ->with($cols, $tables, $joins, $condition, $vhm)
                 ->willReturn('SELECT `id`, `name` FROM `users` WHERE `age` > 18');
 
-        $subject->method('_executePdoQuery')
-                ->willReturnCallback(
-                    function ($query) use ($pdo) {
-                        $statement = $pdo->prepare($query);
-                        $statement->execute();
-
-                        return $statement;
-                    }
-                );
-
-        $result = $reflect->_select($condition);
         $expected = [
             ['id' => '2', 'name' => 'bar'],
             ['id' => '4', 'name' => 'test'],
         ];
+        $statement = $this->getMockBuilder('\PDOStatement')
+                          ->setMethods(['execute', 'fetchAll'])
+                          ->getMock();
+
+        $statement->method('fetchAll')->willReturn($expected);
+        $subject->method('_executePdoQuery')->willReturn($statement);
+
+        $result = $reflect->_select($condition);
 
         $this->assertEquals(
             $expected,
@@ -246,7 +213,6 @@ class PdoSelectCapableTraitTest extends TestCase
     {
         $subject = $this->createInstance([], [], ['users'], [], []);
         $reflect = $this->reflect($subject);
-        $pdo = $this->createDatabase();
 
         $condition = null;
         $joins = [
@@ -274,22 +240,19 @@ class PdoSelectCapableTraitTest extends TestCase
                           JOIN `users` ON `users`.`id` = `msgs`.`user_id`'
                 );
 
-        $subject->method('_executePdoQuery')
-                ->willReturnCallback(
-                    function ($query) use ($pdo) {
-                        $statement = $pdo->prepare($query);
-                        $statement->execute();
-
-                        return $statement;
-                    }
-                );
-
-        $result = $reflect->_select();
         $expected = [
             ['id' => '1', 'content' => 'hello world', 'name' => 'bar'],
             ['id' => '5', 'content' => 'a message!', 'name' => 'bar'],
             ['id' => '6', 'content' => 'tree(3)', 'name' => 'test'],
         ];
+        $statement = $this->getMockBuilder('\PDOStatement')
+                          ->setMethods(['execute', 'fetchAll'])
+                          ->getMock();
+
+        $statement->method('fetchAll')->willReturn($expected);
+        $subject->method('_executePdoQuery')->willReturn($statement);
+
+        $result = $reflect->_select();
 
         $this->assertEquals(
             $expected,
@@ -310,7 +273,6 @@ class PdoSelectCapableTraitTest extends TestCase
     {
         $subject = $this->createInstance([], [], ['users'], [], []);
         $reflect = $this->reflect($subject);
-        $pdo = $this->createDatabase();
 
         $condition = $this->createLogicalExpression(
             'greater',
@@ -345,21 +307,18 @@ class PdoSelectCapableTraitTest extends TestCase
                           WHERE `users`.`age` > 20'
                 );
 
-        $subject->method('_executePdoQuery')
-                ->willReturnCallback(
-                    function ($query) use ($pdo) {
-                        $statement = $pdo->prepare($query);
-                        $statement->execute();
-
-                        return $statement;
-                    }
-                );
-
-        $result = $reflect->_select($condition);
         $expected = [
             ['id' => '1', 'content' => 'hello world', 'name' => 'bar'],
             ['id' => '5', 'content' => 'a message!', 'name' => 'bar'],
         ];
+        $statement = $this->getMockBuilder('\PDOStatement')
+                          ->setMethods(['execute', 'fetchAll'])
+                          ->getMock();
+
+        $statement->method('fetchAll')->willReturn($expected);
+        $subject->method('_executePdoQuery')->willReturn($statement);
+
+        $result = $reflect->_select($condition);
 
         $this->assertEquals(
             $expected,
