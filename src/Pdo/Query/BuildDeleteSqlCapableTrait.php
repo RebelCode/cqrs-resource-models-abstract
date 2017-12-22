@@ -4,7 +4,6 @@ namespace RebelCode\Storage\Resource\Pdo\Query;
 
 use Dhii\Expression\LogicalExpressionInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
-use Dhii\Util\String\StringableInterface;
 
 /**
  * Common functionality for objects that can build DELETE SQL queries.
@@ -18,7 +17,7 @@ trait BuildDeleteSqlCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param string|StringableInterface      $table        The name of the table to delete from.
+     * @param string|Stringable               $table        The name of the table to delete from.
      * @param LogicalExpressionInterface|null $condition    Optional condition that records must satisfy to be deleted.
      * @param string[]|Stringable[]           $valueHashMap Optional mapping of term names to their hashes
      *
@@ -30,7 +29,7 @@ trait BuildDeleteSqlCapableTrait
         array $valueHashMap = []
     ) {
         $escTable = $this->_escapeSqlReference($table);
-        $where    = $this->_buildSqlWhereClause($condition, $valueHashMap);
+        $where = $this->_buildSqlWhereClause($condition, $valueHashMap);
 
         $query = sprintf('DELETE FROM %1$s %2$s', $escTable, $where);
         $query = sprintf('%s;', trim($query));
