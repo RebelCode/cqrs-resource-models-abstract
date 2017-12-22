@@ -94,8 +94,8 @@ class PdoSelectCapableTraitTest extends TestCase
     public function createEntityField($entity, $field)
     {
         return $this->mock('Dhii\Storage\Resource\Sql\EntityFieldInterface')
-                    ->getEntityName($entity)
-                    ->getFieldName($field)
+                    ->getEntity($entity)
+                    ->getField($field)
                     ->new();
     }
 
