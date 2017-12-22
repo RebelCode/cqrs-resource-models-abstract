@@ -46,12 +46,12 @@ class PdoInsertCapableTraitTest extends TestCase
                         );
 
         $mock = $builder->getMockForTrait();
-        $mock->method('_normalizeString')->willReturn(
+        $mock->method('_normalizeString')->willReturnCallback(
             function ($input) {
                 return strval($input);
             }
         );
-        $mock->method('_getPdoValueHashString')->willReturn(
+        $mock->method('_getPdoValueHashString')->willReturnCallback(
             function ($input) {
                 return ':'.hash('crc32b', strval($input));
             }
