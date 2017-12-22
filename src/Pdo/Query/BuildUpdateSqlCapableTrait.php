@@ -26,6 +26,8 @@ trait BuildUpdateSqlCapableTrait
      * @param array                           $valueHashMap Optional map of value names and their hashes.
      *
      * @return string The built INSERT query.
+     *
+     * @throws InvalidArgumentException If the change set is empty.
      */
     protected function _buildUpdateSql(
         $table,
