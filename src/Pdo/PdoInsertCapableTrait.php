@@ -33,7 +33,6 @@ trait PdoInsertCapableTrait
         );
 
         $statement = $this->_executePdoQuery($query);
-        $statement->execute($valueHashMap);
 
         return $statement;
     }
