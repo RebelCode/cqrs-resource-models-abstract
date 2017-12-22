@@ -112,10 +112,6 @@ class PdoInsertCapableTraitTest extends TestCase
                 ->with($table, $cols, $rowSet, $this->anything())
                 ->willReturn('INSERT INTO `users` (`id`, `name`, `age`) VALUES (5, "foo", 22), (11, "bar", 19)');
 
-        $statement->expects($this->once())
-            ->method('execute')
-            ->with($this->isType('array'));
-
         $result = $reflect->_insert($rowSet);
 
         $this->assertSame($statement, $result, 'Retrieved result is not the PDO statement instance.');
