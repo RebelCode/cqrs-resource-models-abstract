@@ -247,6 +247,6 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
 
         $this->setExpectedException('InvalidArgumentException');
 
-        $reflect->_buildUpdateSql('my_table');
+        $reflect->_buildUpdateSql('my_table', []);
     }
 }
