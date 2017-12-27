@@ -364,15 +364,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Dhii/expression-interface.git",
-                "reference": "d8ce43da60bec87def950e9b0ab2978427aa2d7f"
+                "reference": "f1527344555899577dbe873d50fd9f211e16c479"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Dhii/expression-interface/zipball/d8ce43da60bec87def950e9b0ab2978427aa2d7f",
-                "reference": "d8ce43da60bec87def950e9b0ab2978427aa2d7f",
+                "url": "https://api.github.com/repos/Dhii/expression-interface/zipball/f1527344555899577dbe873d50fd9f211e16c479",
+                "reference": "f1527344555899577dbe873d50fd9f211e16c479",
                 "shasum": ""
             },
             "require": {
+                "dhii/data-key-value-aware-interface": "^0.1",
                 "dhii/evaluable-interface": "^0.1",
                 "php": "^5.3 | ^7.0"
             },
@@ -400,7 +401,7 @@
                 }
             ],
             "description": "Interoperable interfaces for representing expressions.",
-            "time": "2017-12-01T12:32:42+00:00"
+            "time": "2017-12-26T14:08:11+00:00"
         },
         {
             "name": "dhii/i18n-helper-base",
