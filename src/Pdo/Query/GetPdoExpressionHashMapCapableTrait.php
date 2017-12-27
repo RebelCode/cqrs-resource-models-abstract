@@ -3,6 +3,7 @@
 namespace RebelCode\Storage\Resource\Pdo\Query;
 
 use Dhii\Expression\ExpressionInterface;
+use Dhii\Expression\LiteralTermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 
@@ -34,10 +35,12 @@ trait GetPdoExpressionHashMapCapableTrait
                 continue;
             }
 
-            $_termStr = $this->_normalizeString($_term);
+            if ($_term instanceof LiteralTermInterface) {
+                $_termStr = $this->_normalizeString($_term->getValue());
 
-            if (!in_array($_termStr, $ignore)) {
-                $values[$_termStr] = $this->_getPdoValueHashString($_termStr);
+                if (!in_array($_termStr, $ignore)) {
+                    $values[$_termStr] = $this->_getPdoValueHashString($_termStr);
+                }
             }
         }
 

@@ -62,6 +62,39 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
     }
 
     /**
+     * Creates an expression term mock instance.
+     *
+     * @since [*next-version*]
+     *
+     * @param string $type The term type.
+     *
+     * @return ExpressionInterface The created expression term instance.
+     */
+    public function createTerm($type)
+    {
+        return $this->mock('Dhii\Expression\TermInterface')
+                    ->getType($type)
+                    ->new();
+    }
+
+    /**
+     * Creates a literal term mock instance.
+     *
+     * @since [*next-version*]
+     *
+     * @param mixed $value The term value.
+     *
+     * @return ExpressionInterface The created literal term instance.
+     */
+    public function createLiteralTerm($value)
+    {
+        return $this->mock('Dhii\Expression\LiteralTermInterface')
+                    ->getType('literal')
+                    ->getValue($value)
+                    ->new();
+    }
+
+    /**
      * Tests whether a valid instance of the test subject can be created.
      *
      * @since [*next-version*]
@@ -91,8 +124,14 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
         $expression = $this->createExpression(
             'plus',
             [
-                $this->createExpression('mult', ['a', 'b']),
-                $this->createExpression('mult', ['c', 'd']),
+                $this->createExpression('mult', [
+                    $this->createLiteralTerm('a'),
+                    $this->createLiteralTerm('b')
+                ]),
+                $this->createExpression('mult', [
+                    $this->createLiteralTerm('c'),
+                    $this->createTerm('d')
+                ]),
             ]
         );
 
@@ -101,7 +140,7 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
         $this->assertArrayHasKey('a', $result, 'Retrieved hash map does not contain hash for "a".');
         $this->assertArrayHasKey('b', $result, 'Retrieved hash map does not contain hash for "b".');
         $this->assertArrayHasKey('c', $result, 'Retrieved hash map does not contain hash for "c".');
-        $this->assertArrayHasKey('d', $result, 'Retrieved hash map does not contain hash for "d".');
+        $this->assertArrayNotHasKey('d', $result, 'Retrieved hash map incorrectly hash hash for "d".');
     }
 
     /**
@@ -118,8 +157,14 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
         $expression = $this->createExpression(
             'plus',
             [
-                $this->createExpression('mult', ['a', 'b']),
-                $this->createExpression('mult', ['c', 'd']),
+                $this->createExpression('mult', [
+                    $this->createLiteralTerm('a'),
+                    $this->createLiteralTerm('b')
+                ]),
+                $this->createExpression('mult', [
+                    $this->createLiteralTerm('c'),
+                    $this->createLiteralTerm('d'),
+                ]),
             ]
         );
         $ignore = ['b', 'd'];
