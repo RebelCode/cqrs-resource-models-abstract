@@ -2,8 +2,14 @@
 
 namespace RebelCode\Storage\Resource\Pdo;
 
+use Dhii\Util\String\StringableInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
+use InvalidArgumentException;
 use PDOStatement;
+use Psr\Container\ContainerInterface;
+use Traversable;
 
 /**
  * Common functionality for objects that can insert records into a database using PDO.
@@ -17,52 +23,124 @@ trait PdoInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array $records A list of containers, each containing the record data to insert.
+     * @param array|ContainerInterface[]|Traversable $records A list of records to insert. Accept record types are:
+     *                                                        * associative sub-arrays
+     *                                                        * containers
      *
      * @return PDOStatement The executed PDO statement.
+     *
+     * @throws ContainerExceptionInterface If an error occurred while reading from a record's container.
      */
-    protected function _insert(array $records)
+    protected function _insert($records)
     {
-        $valueHashMap = array_map([$this, '_getSqlInsertValueHashMap'], $records);
+        $processedRecords = $this->_preprocessRecords($records, $hashValueMap);
+        $valueHashMap = array_flip($hashValueMap);
 
         $query = $this->_buildInsertSql(
             $this->_getSqlInsertTable(),
             $this->_getSqlInsertColumnNames(),
-            $records,
+            $processedRecords,
             $valueHashMap
         );
 
-        $statement = $this->_executePdoQuery($query);
+        $statement = $this->_executePdoQuery(
+            $query,
+            $hashValueMap
+        );
 
         return $statement;
     }
 
     /**
-     * Extracts and retrieves the data hash map from record data.
+     * Pre-processes the list of records.
      *
      * @since [*next-version*]
      *
-     * @param array $record An associative array mapping field names to their values for a single record.
+     * @param ContainerInterface[]|Traversable $records      An array or traversable of records, as containers.
+     * @param array|null                       $valueHashMap The value hash map to which to write new value hashes.
      *
-     * @return array The generated value hash map, mapping values to their respective hashes.
+     * @return array The pre-processed record data list, as an array of record data associative sub-arrays.
+     *
+     * @throws ContainerExceptionInterface If an error occurred while reading from a record's container.
      */
-    protected function _getSqlInsertValueHashMap(array $record)
+    protected function _preprocessRecords($records, &$valueHashMap = [])
     {
-        $map = [];
-
-        foreach ($this->_getSqlInsertFieldColumnMap() as $_field => $_column) {
-            if (!isset($record[$_field])) {
-                continue;
-            }
-
-            $_value = $record[$_field];
-            $_hash  = $this->_getPdoValueHashString($_value);
-
-            $map[$_column] = $_hash;
+        // Initialize variable, in case it was declared implicitly during the method call
+        if ($valueHashMap === null) {
+            $valueHashMap = [];
         }
 
-        return $map;
+        $newRecords = [];
+
+        foreach ($records as $_idx => $_record) {
+            $newRecords[$_idx] = $this->_extractRecordData($_record, $valueHashMap);
+        }
+
+        return $newRecords;
     }
+
+    /**
+     * Extracts record's data from the container and into an array.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|ContainerInterface $record       The record data container.
+     * @param array                    $hashValueMap A hash-to-value map to which new hash-value pairs are written.
+     *
+     * @return array The extracted record data as an associative array.
+     *
+     * @throws ContainerExceptionInterface If an error occurred while reading from the record container.
+     */
+    protected function _extractRecordData($record, array &$hashValueMap = [])
+    {
+        $result = [];
+
+        foreach ($this->_getSqlInsertFieldColumnMap() as $_field => $_column) {
+            try {
+                $_value = $this->_containerGet($record, $_field);
+                // Calculate hash for value
+                $_valueStr = $this->_normalizeString($_value);
+                $_valueHash = $this->_getPdoValueHashString($_valueStr);
+                // Add hash-to-value entry to map
+                $hashValueMap[$_valueHash] = $_valueStr;
+                // Add column-to-value entry to record data
+                $result[$_column] = $_value;
+            } catch (NotFoundExceptionInterface $nfe) {
+                continue;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieves an entry from a container or data set.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|ContainerInterface   $container The container or array to retrieve from.
+     * @param string|StringableInterface $key       The key of the value to retrieve.
+     *
+     * @return mixed The value mapped to by the key.
+     *
+     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
+     * @throws NotFoundExceptionInterface If the key was not found in the container.
+     */
+    abstract protected function _containerGet($container, $key);
+
+    /**
+     * Checks if a container or data set has a specific entry, by key.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|ContainerInterface   $container The container or array to search.
+     * @param string|StringableInterface $key       The key to search for.
+     *
+     * @return bool True if the key was found in the container, false if not.
+     *
+     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
+     */
+    abstract protected function _containerHas($container, $key);
 
     /**
      * Hashes a query value for use in PDO queries when parameter binding.
@@ -117,7 +195,7 @@ trait PdoInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @return array A map containing the field names as keys and the matching column names as values.
+     * @return array|Traversable A map containing the field names as keys and the matching column names as values.
      */
     abstract protected function _getSqlInsertFieldColumnMap();
 
@@ -132,4 +210,20 @@ trait PdoInsertCapableTrait
      * @return PDOStatement The executed statement.
      */
     abstract protected function _executePdoQuery($query, array $inputArgs = []);
+
+    /**
+     * Normalizes a value to its string representation.
+     *
+     * The values that can be normalized are any scalar values, as well as
+     * {@see StringableInterface).
+     *
+     * @since [*next-version*]
+     *
+     * @param string|int|float|bool|Stringable $subject The value to normalize to string.
+     *
+     * @throws InvalidArgumentException If the value cannot be normalized.
+     *
+     * @return string The string that resulted from normalization.
+     */
+    abstract protected function _normalizeString($subject);
 }
