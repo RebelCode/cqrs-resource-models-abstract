@@ -37,12 +37,28 @@
       <path value="$PROJECT_DIR$/vendor/codeclimate/php-test-reporter" />
       <path value="$PROJECT_DIR$/vendor/friendsofphp/php-cs-fixer" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/dhii/i18n-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/data-key-value-aware-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/data-path-aware-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/i18n-helper-base" />
+      <path value="$PROJECT_DIR$/vendor/dhii/data-hierarchy-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/exception-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/data-tree-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/config-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/data-container-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/iterator-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/stringable-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/expression-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/evaluable-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/output-renderer-interface" />
+      <path value="$PROJECT_DIR$/vendor/dhii/sql-interface" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="5.4.0" />
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings load_method="CUSTOM_LOADER" custom_loader_path="D:/dev/rebelcode/cqrs-resource-model-abstract/vendor/autoload.php" />
+      <PhpUnitSettings load_method="CUSTOM_LOADER" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" />
     </phpunit_settings>
   </component>
 </project>

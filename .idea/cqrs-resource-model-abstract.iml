@@ -5,7 +5,22 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="RebelCode\Storage\Resource\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/codeclimate/php-test-reporter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/config-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/data-container-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/data-hierarchy-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/data-key-value-aware-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/data-path-aware-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/data-tree-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/evaluable-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/exception-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/expression-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/i18n-helper-base" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/i18n-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/iterator-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/output-renderer-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/php-cs-fixer-config" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/sql-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/stringable-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/friendsofphp/php-cs-fixer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzle/guzzle" />
@@ -18,6 +33,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-token-stream" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/phpunit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/phpunit-mock-objects" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ptrofimov/xpmock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satooshi/php-coveralls" />
@@ -46,7 +62,22 @@
         <CLASSES>
           <root url="file://$MODULE_DIR$/vendor/codeclimate/php-test-reporter" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/config-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-container-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-hierarchy-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-key-value-aware-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-path-aware-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-tree-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/evaluable-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/exception-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/expression-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/i18n-helper-base" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/i18n-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/iterator-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/output-renderer-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/php-cs-fixer-config" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/sql-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/stringable-interface" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
           <root url="file://$MODULE_DIR$/vendor/friendsofphp/php-cs-fixer" />
           <root url="file://$MODULE_DIR$/vendor/guzzle/guzzle" />
@@ -59,6 +90,7 @@
           <root url="file://$MODULE_DIR$/vendor/phpunit/php-token-stream" />
           <root url="file://$MODULE_DIR$/vendor/phpunit/phpunit" />
           <root url="file://$MODULE_DIR$/vendor/phpunit/phpunit-mock-objects" />
+          <root url="file://$MODULE_DIR$/vendor/psr/container" />
           <root url="file://$MODULE_DIR$/vendor/psr/log" />
           <root url="file://$MODULE_DIR$/vendor/ptrofimov/xpmock" />
           <root url="file://$MODULE_DIR$/vendor/satooshi/php-coveralls" />
@@ -83,7 +115,22 @@
         <SOURCES>
           <root url="file://$MODULE_DIR$/vendor/codeclimate/php-test-reporter" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/config-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-container-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-hierarchy-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-key-value-aware-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-path-aware-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/data-tree-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/evaluable-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/exception-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/expression-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/i18n-helper-base" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/i18n-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/iterator-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/output-renderer-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/php-cs-fixer-config" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/sql-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/stringable-interface" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
           <root url="file://$MODULE_DIR$/vendor/friendsofphp/php-cs-fixer" />
           <root url="file://$MODULE_DIR$/vendor/guzzle/guzzle" />
@@ -96,6 +143,7 @@
           <root url="file://$MODULE_DIR$/vendor/phpunit/php-token-stream" />
           <root url="file://$MODULE_DIR$/vendor/phpunit/phpunit" />
           <root url="file://$MODULE_DIR$/vendor/phpunit/phpunit-mock-objects" />
+          <root url="file://$MODULE_DIR$/vendor/psr/container" />
           <root url="file://$MODULE_DIR$/vendor/psr/log" />
           <root url="file://$MODULE_DIR$/vendor/ptrofimov/xpmock" />
           <root url="file://$MODULE_DIR$/vendor/satooshi/php-coveralls" />
