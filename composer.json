@@ -15,7 +15,7 @@
         "php": "^5.4 | ^7.0",
         "dhii/config-interface": "dev-release/0.1",
         "dhii/i18n-helper-base": "dev-develop",
-        "dhii/expression-interface": "dev-task/4-revision-api-strings",
+        "dhii/expression-interface": "^0.2",
         "dhii/output-renderer-interface": "^0.2",
         "dhii/sql-interface": "dev-task/initial-interfaces"
     },
