@@ -41,8 +41,10 @@ trait NormalizeWpPostDataArrayCapableTrait
         }
 
         try {
-            $metaInputKey = $this->_getWpPostDataMetaFieldName();
-            $data[$metaInputKey] = $this->_getWpInsertPostMeta($postData);
+            $metaField = $this->_getWpPostDataMetaFieldName();
+            $toMerge = [$metaField => $this->_getWpInsertPostMeta($postData)];
+
+            $data = array_merge($data, $toMerge);
         } catch (InvalidArgumentException $invalidArgumentException) {
             // do nothing - $post is not a traversable or array, so we cannot read meta data from it
         }
