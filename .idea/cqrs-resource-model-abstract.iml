@@ -21,6 +21,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/php-cs-fixer-config" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/sql-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/stringable-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/type-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/validation-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/friendsofphp/php-cs-fixer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzle/guzzle" />
@@ -78,6 +80,8 @@
           <root url="file://$MODULE_DIR$/vendor/dhii/php-cs-fixer-config" />
           <root url="file://$MODULE_DIR$/vendor/dhii/sql-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/stringable-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/type-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/validation-interface" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
           <root url="file://$MODULE_DIR$/vendor/friendsofphp/php-cs-fixer" />
           <root url="file://$MODULE_DIR$/vendor/guzzle/guzzle" />
@@ -131,6 +135,8 @@
           <root url="file://$MODULE_DIR$/vendor/dhii/php-cs-fixer-config" />
           <root url="file://$MODULE_DIR$/vendor/dhii/sql-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/stringable-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/type-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/validation-interface" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
           <root url="file://$MODULE_DIR$/vendor/friendsofphp/php-cs-fixer" />
           <root url="file://$MODULE_DIR$/vendor/guzzle/guzzle" />
