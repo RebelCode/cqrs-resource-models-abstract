@@ -5,6 +5,7 @@ namespace RebelCode\Storage\Resource\WordPress;
 use Dhii\Expression\LogicalExpressionInterface;
 use InvalidArgumentException;
 use Traversable;
+use WP_Query;
 
 /**
  * Common functionality for objects that can retrieve WordPress posts from a database.
@@ -75,7 +76,7 @@ trait WpSelectCapableTrait
      *
      * @param array $args The arguments to use for constructing the `WP_Query` instance.
      *
-     * @return \WP_Query
+     * @return WP_Query
      */
     abstract protected function _createWpQuery(array $args);
 }
