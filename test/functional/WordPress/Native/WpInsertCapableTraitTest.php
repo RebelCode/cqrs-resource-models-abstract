@@ -34,38 +34,14 @@ class WpInsertCapableTraitTest extends TestCase
         $methods = $this->mergeValues(
             $methods,
             [
-                '__',
+                '_normalizeWpPostDataArray',
                 '_wpInsertPost',
-                '_getWpInsertPostFieldKeys',
-                '_getWpInsertPostMetaKey',
-                '_containerGet',
-                '_containerHas',
-                '_normalizeArray',
-                '_normalizeString',
             ]
         );
 
         $mock = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
                      ->setMethods($methods)
                      ->getMockForTrait();
-
-        $mock->method('__')->willReturnArgument(0);
-        $mock->method('_normalizeArray')->willReturnArgument(0);
-        $mock->method('_normalizeString')->willReturnCallback(
-            function($s) {
-                return strval($s);
-            }
-        );
-        $mock->method('_containerGet')->willReturnCallback(
-            function($c, $k) {
-                return $c[$k];
-            }
-        );
-        $mock->method('_containerHas')->willReturnCallback(
-            function($c, $k) {
-                return isset($c[$k]);
-            }
-        );
 
         return $mock;
     }
@@ -104,8 +80,8 @@ class WpInsertCapableTraitTest extends TestCase
     }
 
     /**
-     * Tests the insert method to assert whether the internal WordPress insertion wrapper method is called with the
-     * correct transformed post data.
+     * Tests the insert method to assert whether the input list of post data are all normalized and given to the
+     * internal WordPress insertion wrapper method.
      *
      * @since [*next-version*]
      */
@@ -114,67 +90,44 @@ class WpInsertCapableTraitTest extends TestCase
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
-        // Keys considered as "post fields"
-        $fields = [
-            $f1 = uniqid('field-'),
-            $f2 = uniqid('field-'),
-            $f3 = uniqid('field-'),
-            $f4 = uniqid('field-'),
-        ];
-        $subject->method('_getWpInsertPostFieldKeys')->willReturn($fields);
-
-        $metaKey = uniqid('metadata-');
-        $subject->method('_getWpInsertPostMetaKey')->willReturn($metaKey);
-
-        // Custom meta keys
-        $m1 = uniqid('meta-');
-        $m2 = uniqid('meta-');
-        $m3 = uniqid('meta-');
         // Input array of post data
         $input = [
-            [
-                $f1 => uniqid('value-'),
-                $f3 => uniqid('value-'),
-                $m2 => uniqid('value-'),
+            $inputPost1 = [
+                uniqid('key-') => uniqid('value-'),
+                uniqid('key-') => uniqid('value-'),
             ],
-            [
-                $m1 => uniqid('value-'),
-                $f4 => uniqid('value-'),
-                $f2 => uniqid('value-'),
+            $inputPost2 = [
+                uniqid('key-') => uniqid('value-'),
+                uniqid('key-') => uniqid('value-'),
+                uniqid('key-') => uniqid('value-'),
             ],
-            [
-                $m1 => uniqid('value-'),
-                $m3 => uniqid('value-'),
-                $f1 => uniqid('value-'),
+            $inputPost3 = [
+                uniqid('key-') => uniqid('value-'),
             ],
         ];
-        $expected = [
-            [
-                $f1      => $input[0][$f1],
-                $f3      => $input[0][$f3],
-                $metaKey => [
-                    $m2 => $input[0][$m2],
-                ],
+        $normalized = [
+            $normPost1 = [
+                uniqid('key-') => uniqid('value-'),
+                uniqid('key-') => uniqid('value-'),
             ],
-            [
-                $f4      => $input[1][$f4],
-                $f2      => $input[1][$f2],
-                $metaKey => [
-                    $m1 => $input[1][$m1],
-                ],
+            $normPost2 = [
+                uniqid('key-') => uniqid('value-'),
+                uniqid('key-') => uniqid('value-'),
+                uniqid('key-') => uniqid('value-'),
             ],
-            [
-                $f1      => $input[2][$f1],
-                $metaKey => [
-                    $m1 => $input[2][$m1],
-                    $m3 => $input[2][$m3],
-                ],
+            $normPost3 = [
+                uniqid('key-') => uniqid('value-'),
             ],
         ];
 
-        $subject->expects($this->exactly(count($expected)))
+        $subject->expects($this->exactly(count($input)))
+                ->method('_normalizeWpPostDataArray')
+                ->withConsecutive([$inputPost1], [$inputPost2], [$inputPost3])
+                ->willReturnOnConsecutiveCalls($normPost1, $normPost2, $normPost3);
+
+        $subject->expects($this->exactly(count($normalized)))
                 ->method('_wpInsertPost')
-                ->withConsecutive([$expected[0]], [$expected[1]], [$expected[2]]);
+                ->withConsecutive([$normPost1], [$normPost2], [$normPost3]);
 
         $reflect->_insert($input);
     }
