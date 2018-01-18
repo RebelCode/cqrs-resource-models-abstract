@@ -27,7 +27,6 @@ trait NormalizeWpPostDataArrayCapableTrait
      * @return array The prepared post data.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from the container.
-     * @throws InvalidArgumentException If the argument is not an array or traversable.
      */
     protected function _normalizeWpPostDataArray($postData)
     {
