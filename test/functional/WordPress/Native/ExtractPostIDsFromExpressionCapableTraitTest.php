@@ -1,6 +1,6 @@
 <?php
 
-namespace RebelCode\Storage\Resource\WordPress\FuncTest;
+namespace RebelCode\Storage\Resource\WordPress\Native\FuncTest;
 
 use Dhii\Expression\LiteralTermInterface;
 use Dhii\Expression\LogicalExpressionInterface;
@@ -10,7 +10,7 @@ use Dhii\Storage\Resource\Sql\EntityFieldInterface;
 use Dhii\Storage\Resource\Sql\Expression\SqlRelationalTypeInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
-use RebelCode\Storage\Resource\WordPress\ExtractPostIDsFromExpressionCapableTrait as TestSubject;
+use RebelCode\Storage\Resource\WordPress\Native\ExtractPostIDsFromExpressionCapableTrait as TestSubject;
 use Xpmock\TestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -26,7 +26,7 @@ class ExtractPostIDsFromExpressionCapableTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\WordPress\ExtractPostIDsFromExpressionCapableTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\WordPress\Native\ExtractPostIdsFromExpressionCapableTrait';
 
     /**
      * Creates a new instance of the test subject.

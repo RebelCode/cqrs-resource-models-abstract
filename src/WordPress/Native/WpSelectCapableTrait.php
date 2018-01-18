@@ -1,6 +1,6 @@
 <?php
 
-namespace RebelCode\Storage\Resource\WordPress;
+namespace RebelCode\Storage\Resource\WordPress\Native;
 
 use Dhii\Expression\LogicalExpressionInterface;
 use InvalidArgumentException;

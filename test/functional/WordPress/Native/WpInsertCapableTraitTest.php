@@ -1,10 +1,9 @@
 <?php
 
-namespace RebelCode\Storage\Resource\WordPress\FuncTest;
+namespace RebelCode\Storage\Resource\WordPress\Native\FuncTest;
 
-use RebelCode\Storage\Resource\WordPress\WpInsertCapableTrait as TestSubject;
+use RebelCode\Storage\Resource\WordPress\Native\WpInsertCapableTrait as TestSubject;
 use Xpmock\TestCase;
-use Exception as RootException;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
@@ -19,7 +18,7 @@ class WpInsertCapableTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\WordPress\WpInsertCapableTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\WordPress\Native\WpInsertCapableTrait';
 
     /**
      * Creates a new instance of the test subject.
