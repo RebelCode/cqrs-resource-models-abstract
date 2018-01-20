@@ -26,15 +26,15 @@ trait WpdbSelectCapableTrait
      */
     protected function _select(LogicalExpressionInterface $condition = null)
     {
-        $fields = $this->_getWpdbSelectFieldNames();
+        $fields = $this->_getSqlSelectFieldNames();
         $valueHashMap = ($condition !== null)
             ? $this->_getWpdbExpressionHashMap($condition, $fields)
             : [];
 
         $query = $this->_buildSelectSql(
-            $this->_getWpdbSelectColumns(),
-            $this->_getWpdbSelectTables(),
-            $this->_getWpdbSelectJoinConditions(),
+            $this->_getSqlSelectColumns(),
+            $this->_getSqlSelectTables(),
+            $this->_getSqlSelectJoinConditions(),
             $condition,
             $valueHashMap
         );
@@ -64,40 +64,40 @@ trait WpdbSelectCapableTrait
     );
 
     /**
-     * Retrieves the WPDB SQL database table names used in WPDB SQL SELECT queries.
+     * Retrieves the SQL database table names used in SQL SELECT queries.
      *
      * @since [*next-version*]
      *
-     * @return string[]|Stringable[] A list of WPDB SQL database table names.
+     * @return string[]|Stringable[] A list of SQL database table names.
      */
-    abstract protected function _getWpdbSelectTables();
+    abstract protected function _getSqlSelectTables();
 
     /**
-     * Retrieves the names of the columns used in WPDB SQL SELECT queries.
+     * Retrieves the names of the columns used in SQL SELECT queries.
      *
      * @since [*next-version*]
      *
      * @return string[]|Stringable[] A list of column names.
      */
-    abstract protected function _getWpdbSelectColumns();
+    abstract protected function _getSqlSelectColumns();
 
     /**
-     * Retrieves the WPDB SQL SELECT query column "field" names.
+     * Retrieves the SQL SELECT query column "field" names.
      *
      * @since [*next-version*]
      *
      * @return string[]|Stringable[] A list of field names.
      */
-    abstract protected function _getWpdbSelectFieldNames();
+    abstract protected function _getSqlSelectFieldNames();
 
     /**
-     * Retrieves the JOIN conditions used in WPDB SQL SELECT queries.
+     * Retrieves the JOIN conditions used in SQL SELECT queries.
      *
      * @since [*next-version*]
      *
      * @return LogicalExpressionInterface[] An assoc. array of logical expressions, keyed by the joined table name.
      */
-    abstract protected function _getWpdbSelectJoinConditions();
+    abstract protected function _getSqlSelectJoinConditions();
 
     /**
      * Retrieves the expression value hash map for a given WPDB SQL condition, for use in WPDB args interpolation.

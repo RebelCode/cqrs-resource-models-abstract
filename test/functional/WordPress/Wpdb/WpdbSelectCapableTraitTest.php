@@ -6,7 +6,6 @@ use Dhii\Expression\LogicalExpressionInterface;
 use Dhii\Storage\Resource\Sql\EntityFieldInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use PHPUnit_Framework_MockObject_MockObject;
-use RebelCode\Storage\Resource\WordPress\Wpdb\WpdbSelectCapableTrait as TestSubject;
 use Xpmock\TestCase;
 
 /**
@@ -40,10 +39,10 @@ class WpdbSelectCapableTraitTest extends TestCase
                                 $methods,
                                 [
                                     '_buildSelectSql',
-                                    '_getWpdbSelectTables',
-                                    '_getWpdbSelectColumns',
-                                    '_getWpdbSelectFieldNames',
-                                    '_getWpdbSelectJoinConditions',
+                                    '_getSqlSelectTables',
+                                    '_getSqlSelectColumns',
+                                    '_getSqlSelectFieldNames',
+                                    '_getSqlSelectJoinConditions',
                                     '_getWpdbExpressionHashMap',
                                     '_executeWpdbQuery',
                                 ]
@@ -139,10 +138,10 @@ class WpdbSelectCapableTraitTest extends TestCase
         ];
         $query = uniqid('query-');
 
-        $subject->method('_getWpdbSelectColumns')->willReturn($cols);
-        $subject->method('_getWpdbSelectTables')->willReturn($tables);
-        $subject->method('_getWpdbSelectJoinConditions')->willReturn($joins);
-        $subject->method('_getWpdbSelectFieldNames')->willReturn($fields);
+        $subject->method('_getSqlSelectColumns')->willReturn($cols);
+        $subject->method('_getSqlSelectTables')->willReturn($tables);
+        $subject->method('_getSqlSelectJoinConditions')->willReturn($joins);
+        $subject->method('_getSqlSelectFieldNames')->willReturn($fields);
         $subject->expects($this->atLeastOnce())
                 ->method('_getWpdbExpressionHashMap')
                 ->with($condition, $fields)
