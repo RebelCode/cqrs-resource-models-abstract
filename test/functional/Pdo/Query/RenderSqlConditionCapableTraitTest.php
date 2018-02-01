@@ -4,6 +4,7 @@ namespace RebelCode\Storage\Resource\Pdo\Query\FuncTest;
 
 use Dhii\Expression\LogicalExpressionInterface;
 use Dhii\Storage\Resource\Sql\EntityFieldInterface;
+use Dhii\Storage\Resource\Sql\Expression\SqlExpressionContextInterface as SqlCtx;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -159,7 +160,13 @@ class RenderSqlConditionCapableTraitTest extends TestCase
         $template = $this->createTemplate();
         $template->expects($this->once())
                  ->method('render')
-                 ->with([$condition, $columnMap, $valueHashMap])
+                 ->with(
+                     [
+                         SqlCtx::K_EXPRESSION       => $condition,
+                         SqlCtx::K_FIELD_COLUMN_MAP => $columnMap,
+                         SqlCtx::K_VALUE_HASH_MAP   => $valueHashMap,
+                     ]
+                 )
                  ->willReturn($output);
 
         $subject->expects($this->once())
