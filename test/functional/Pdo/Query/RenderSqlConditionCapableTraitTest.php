@@ -162,9 +162,8 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                  ->method('render')
                  ->with(
                      [
-                         SqlCtx::K_EXPRESSION       => $condition,
-                         SqlCtx::K_FIELD_COLUMN_MAP => $columnMap,
-                         SqlCtx::K_VALUE_HASH_MAP   => $valueHashMap,
+                         SqlCtx::K_EXPRESSION  => $condition,
+                         SqlCtx::K_ALIASES_MAP => array_merge($columnMap, $valueHashMap),
                      ]
                  )
                  ->willReturn($output);

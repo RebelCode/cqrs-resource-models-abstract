@@ -644,12 +644,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Dhii/sql-interface.git",
-                "reference": "1dd62d7f513b8549676e7154077fd101a8d631f8"
+                "reference": "13541ac960df52d9a1cdd523067253f7542af587"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Dhii/sql-interface/zipball/1dd62d7f513b8549676e7154077fd101a8d631f8",
-                "reference": "1dd62d7f513b8549676e7154077fd101a8d631f8",
+                "url": "https://api.github.com/repos/Dhii/sql-interface/zipball/13541ac960df52d9a1cdd523067253f7542af587",
+                "reference": "13541ac960df52d9a1cdd523067253f7542af587",
                 "shasum": ""
             },
             "require": {
@@ -686,7 +686,7 @@
                 }
             ],
             "description": "Interfaces for SQL resource abstraction.",
-            "time": "2018-02-01T16:13:25+00:00"
+            "time": "2018-02-02T12:23:49+00:00"
         },
         {
             "name": "dhii/stringable-interface",

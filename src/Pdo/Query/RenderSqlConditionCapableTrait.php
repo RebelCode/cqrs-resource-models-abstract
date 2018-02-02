@@ -46,10 +46,11 @@ trait RenderSqlConditionCapableTrait
         }
 
         $columnMap = $this->_getSqlFieldColumnMap();
+        $aliases = array_merge($columnMap, $valueHashMap);
+
         $context   = [
-            SqlCtx::K_EXPRESSION       => $condition,
-            SqlCtx::K_FIELD_COLUMN_MAP => $columnMap,
-            SqlCtx::K_VALUE_HASH_MAP   => $valueHashMap,
+            SqlCtx::K_EXPRESSION  => $condition,
+            SqlCtx::K_ALIASES_MAP => $aliases
         ];
 
         return $template->render($context);
