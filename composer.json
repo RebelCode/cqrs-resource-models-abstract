@@ -1,5 +1,5 @@
 {
-    "name": "rebelcode/cqrs-resource-model-abstract",
+    "name": "rebelcode/cqrs-resource-models-abstract",
     "description": "Abstract functionality for a CQRS approach to resource models.",
     "type": "library",
     "license": "GPL-3.0",
