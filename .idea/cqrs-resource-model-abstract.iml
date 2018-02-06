@@ -14,6 +14,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/evaluable-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/exception-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/expression-interface" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/expression-renderer-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/i18n-helper-base" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/i18n-interface" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dhii/iterator-interface" />
@@ -73,6 +74,7 @@
           <root url="file://$MODULE_DIR$/vendor/dhii/evaluable-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/exception-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/expression-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/expression-renderer-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/i18n-helper-base" />
           <root url="file://$MODULE_DIR$/vendor/dhii/i18n-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/iterator-interface" />
@@ -128,6 +130,7 @@
           <root url="file://$MODULE_DIR$/vendor/dhii/evaluable-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/exception-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/expression-interface" />
+          <root url="file://$MODULE_DIR$/vendor/dhii/expression-renderer-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/i18n-helper-base" />
           <root url="file://$MODULE_DIR$/vendor/dhii/i18n-interface" />
           <root url="file://$MODULE_DIR$/vendor/dhii/iterator-interface" />
