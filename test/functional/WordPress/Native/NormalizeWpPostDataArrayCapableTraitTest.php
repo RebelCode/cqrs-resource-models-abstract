@@ -35,8 +35,8 @@ class NormalizeWpPostDataArrayCapableTraitTest extends TestCase
         $methods = $this->mergeValues(
             $methods,
             [
-                '_getWpPostDataFieldKeys',
-                '_getWpPostDataMetaFieldName',
+                '_getWpPostDataFieldsToKeysMap',
+                '_getWpPostDataMetaFieldKey',
                 '_containerGet',
                 '_containerHas',
                 '_normalizeArray',
@@ -108,32 +108,33 @@ class NormalizeWpPostDataArrayCapableTraitTest extends TestCase
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
-        $fieldNames = [
-            $f1 = uniqid('field-'),
-            $f2 = uniqid('field-'),
-            $f3 = uniqid('field-'),
-            $f4 = uniqid('field-'),
+        $fieldsMap = [
+            $f1 = uniqid('field-') => $k1 = uniqid('key-'),
+            $f2 = uniqid('field-') => $k2 = uniqid('key-'),
+            $f3 = uniqid('field-') => $k3 = uniqid('key-'),
+            $f4 = uniqid('field-') => $k4 = uniqid('key-'),
         ];
         $metaField = uniqid('meta-');
-        $subject->method('_getWpPostDataFieldKeys')->willReturn($fieldNames);
-        $subject->method('_getWpPostDataMetaFieldName')->willReturn($metaField);
+        $subject->method('_getWpPostDataFieldsToKeysMap')->willReturn($fieldsMap);
+        $subject->method('_getWpPostDataMetaFieldKey')->willReturn($metaField);
 
+        // Input is a mix of known fields and meta fields
         $m1 = uniqid('meta-key-');
         $m2 = uniqid('meta-key-');
         $m3 = uniqid('meta-key-');
         $input = [
-            $f2 => $fv2 = uniqid('value-'),
+            $f2 => $pv2 = uniqid('value-'),
             $m1 => $mv1 = uniqid('meta-value-'),
-            $f3 => $fv3 = uniqid('value-'),
-            $f1 => $fv1 = uniqid('value-'),
+            $f3 => $pv3 = uniqid('value-'),
+            $f1 => $pv1 = uniqid('value-'),
             $m3 => $mv3 = uniqid('meta-value-'),
             $m2 => $mv2 = uniqid('meta-value-'),
         ];
 
         $expected = [
-            $f2        => $fv2,
-            $f3        => $fv3,
-            $f1        => $fv1,
+            $k2        => $pv2,
+            $k3        => $pv3,
+            $k1        => $pv1,
             $metaField => [
                 $m1 => $mv1,
                 $m3 => $mv3,

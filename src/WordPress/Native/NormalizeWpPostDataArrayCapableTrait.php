@@ -22,7 +22,7 @@ trait NormalizeWpPostDataArrayCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface $postData The post data array or container.
+     * @param array|Traversable $postData The post data.
      *
      * @return array The prepared post data.
      *
@@ -30,56 +30,37 @@ trait NormalizeWpPostDataArrayCapableTrait
      */
     protected function _normalizeWpPostDataArray($postData)
     {
+        $fields = $this->_getWpPostDataFieldsToKeysMap();
+
+        // Separate post data from meta data
         $data = [];
-
-        foreach ($this->_getWpPostDataFieldKeys() as $_field) {
-            $_field = $this->_normalizeString($_field);
-
-            if ($this->_containerHas($postData, $_field)) {
-                $data[$_field] = $this->_containerGet($postData, $_field);
+        $meta = [];
+        foreach ($postData as $_key => $_value) {
+            // If key unknown, treat as meta
+            if (!isset($fields[$_key])) {
+                $meta[$_key] = $_value;
+                continue;
             }
+            // De-alias field to key and add to data
+            $_realKey = $this->_normalizeString($fields[$_key]);
+            $data[$_realKey] = $_value;
         }
 
-        try {
-            $metaField = $this->_getWpPostDataMetaFieldName();
-            $toMerge = [$metaField => $this->_getWpInsertPostMeta($postData)];
-
-            $data = array_merge($data, $toMerge);
-        } catch (InvalidArgumentException $invalidArgumentException) {
-            // do nothing - $post is not a traversable or array, so we cannot read meta data from it
-        }
+        // Add meta to post data
+        $metaField = $this->_getWpPostDataMetaFieldKey();
+        $data[$metaField] = $meta;
 
         return $data;
     }
 
     /**
-     * Retrieves the meta data for a given post.
-     *
-     * @since [*next-version*]
-     *
-     * @param array|Traversable $post The post data array or traversable object.
-     *
-     * @return array An associative array containing the post meta key-value pairs.
-     *
-     * @throws InvalidArgumentException If the argument is not an array or traversable.
-     */
-    protected function _getWpInsertPostMeta($post)
-    {
-        $post = $this->_normalizeArray($post);
-        $fields = array_flip($this->_getWpPostDataFieldKeys());
-        $meta = array_diff_key($post, $fields);
-
-        return $meta;
-    }
-
-    /**
-     * Retrieves a list of strings that represent the known post field keys.
+     * Retrieves a map of string field names corresponding to known post data keys.
      *
      * @since [*next-version*]
      *
      * @return string[]|Stringable[] A list of post field key strings.
      */
-    abstract protected function _getWpPostDataFieldKeys();
+    abstract protected function _getWpPostDataFieldsToKeysMap();
 
     /**
      * Retrieves the key where meta data is found in post data arrays.
@@ -88,7 +69,7 @@ trait NormalizeWpPostDataArrayCapableTrait
      *
      * @return string The post meta key.
      */
-    abstract protected function _getWpPostDataMetaFieldName();
+    abstract protected function _getWpPostDataMetaFieldKey();
 
     /**
      * Retrieves an entry from a container or data set.
