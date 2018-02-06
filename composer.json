@@ -17,7 +17,7 @@
         "dhii/i18n-helper-base": "dev-develop",
         "dhii/expression-interface": "^0.2",
         "dhii/output-renderer-interface": "^0.2",
-        "dhii/sql-interface": "dev-task/initial-interfaces"
+        "dhii/sql-interface": "^0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8",

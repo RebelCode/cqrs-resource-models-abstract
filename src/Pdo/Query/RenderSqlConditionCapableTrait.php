@@ -7,6 +7,7 @@ use Dhii\Output\Exception\RendererExceptionInterface;
 use Dhii\Output\Exception\TemplateRenderExceptionInterface;
 use Dhii\Output\TemplateInterface;
 use Dhii\Storage\Resource\Sql\EntityFieldInterface;
+use Dhii\Storage\Resource\Sql\Expression\SqlExpressionContextInterface as SqlCtx;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
 use InvalidArgumentException;
@@ -45,7 +46,12 @@ trait RenderSqlConditionCapableTrait
         }
 
         $columnMap = $this->_getSqlFieldColumnMap();
-        $context   = [$condition, $columnMap, $valueHashMap];
+        $aliases = array_merge($columnMap, $valueHashMap);
+
+        $context   = [
+            SqlCtx::K_EXPRESSION  => $condition,
+            SqlCtx::K_ALIASES_MAP => $aliases
+        ];
 
         return $template->render($context);
     }
