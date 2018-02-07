@@ -2,6 +2,8 @@
 
 namespace RebelCode\Storage\Resource\WordPress\Native\FuncTest;
 
+use Dhii\Expression\LiteralTermInterface;
+use InvalidArgumentException;
 use RebelCode\Storage\Resource\WordPress\Native\NormalizeWpPostDataArrayCapableTrait as TestSubject;
 use Xpmock\TestCase;
 use Exception as RootException;
@@ -40,7 +42,7 @@ class NormalizeWpPostDataArrayCapableTraitTest extends TestCase
                 '_containerGet',
                 '_containerHas',
                 '_normalizeArray',
-                '_normalizeString',
+                '_normalizeString'
             ]
         );
 
@@ -79,6 +81,24 @@ class NormalizeWpPostDataArrayCapableTraitTest extends TestCase
     public function mergeValues($destination, $source)
     {
         return array_keys(array_merge(array_flip($destination), array_flip($source)));
+    }
+
+    /**
+     * Creates a literal term mock instance.
+     *
+     * @since [*next-version*]
+     *
+     * @param string $type The term type.
+     * @param mixed  $value The term value.
+     *
+     * @return LiteralTermInterface The created literal term instance.
+     */
+    public function createLiteralTerm($type, $value)
+    {
+        return $this->mock('Dhii\Expression\LiteralTermInterface')
+                    ->getType($type)
+                    ->getValue($value)
+                    ->new();
     }
 
     /**
@@ -126,9 +146,9 @@ class NormalizeWpPostDataArrayCapableTraitTest extends TestCase
             $f2 => $pv2 = uniqid('value-'),
             $m1 => $mv1 = uniqid('meta-value-'),
             $f3 => $pv3 = uniqid('value-'),
-            $f1 => $pv1 = uniqid('value-'),
+            $f1 => $this->createLiteralTerm('', $pv1 = uniqid('value-')),
             $m3 => $mv3 = uniqid('meta-value-'),
-            $m2 => $mv2 = uniqid('meta-value-'),
+            $m2 => $this->createLiteralTerm('', $mv2 = uniqid('meta-value-')),
         ];
 
         $expected = [

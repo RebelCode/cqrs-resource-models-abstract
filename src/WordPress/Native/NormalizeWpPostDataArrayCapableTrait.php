@@ -2,6 +2,8 @@
 
 namespace RebelCode\Storage\Resource\WordPress\Native;
 
+use Dhii\Expression\LiteralTermInterface;
+use Dhii\Expression\TermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
@@ -22,11 +24,10 @@ trait NormalizeWpPostDataArrayCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|Traversable $postData The post data.
+     * @param array|TermInterface[]|Traversable $postData The post data to normalize. If terms are given, they must be
+     *                                                    {@see LiteralTermInterface} instances.
      *
      * @return array The prepared post data.
-     *
-     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
      */
     protected function _normalizeWpPostDataArray($postData)
     {
@@ -38,12 +39,12 @@ trait NormalizeWpPostDataArrayCapableTrait
         foreach ($postData as $_key => $_value) {
             // If key unknown, treat as meta
             if (!isset($fields[$_key])) {
-                $meta[$_key] = $_value;
+                $meta[$_key] = $this->_normalizeWpPostDataValue($_value);
                 continue;
             }
             // De-alias field to key and add to data
             $_realKey = $this->_normalizeString($fields[$_key]);
-            $data[$_realKey] = $_value;
+            $data[$_realKey] = $this->_normalizeWpPostDataValue($_value);
         }
 
         // Add meta to post data
@@ -51,6 +52,22 @@ trait NormalizeWpPostDataArrayCapableTrait
         $data[$metaField] = $meta;
 
         return $data;
+    }
+
+    /**
+     * Normalizes a single value in a WordPress post data set.
+     *
+     * @since [*next-version*]
+     *
+     * @param mixed|TermInterface $value The value to normalize.
+     *
+     * @return mixed The normalized value.
+     */
+    protected function _normalizeWpPostDataValue($value)
+    {
+        return ($value instanceof LiteralTermInterface)
+            ? $value->getValue()
+            : $value;
     }
 
     /**
