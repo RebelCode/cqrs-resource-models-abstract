@@ -3,12 +3,14 @@
 namespace RebelCode\Storage\Resource\WordPress\Native;
 
 use Dhii\Expression\LogicalExpressionInterface;
+use Dhii\Expression\TermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
 use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Traversable;
 use WP_Error;
 
 /**
@@ -27,14 +29,22 @@ trait WpUpdateCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface        $changeSet A map of post/meta field names mapping to the values to change.
-     * @param LogicalExpressionInterface|null $condition Optional condition for post IDs.
-     *
-     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
+     * @param array|TermInterface[]|Traversable $changeSet A map of post/meta field names mapping to the values, or
+     *                                                     {@see LiteralTermInterface} instances.
+     * @param LogicalExpressionInterface|null   $condition Optional condition for post IDs.
      */
     protected function _update($changeSet, LogicalExpressionInterface $condition = null)
     {
-        if ($condition !== null && $condition->isNegated()) {
+        if ($condition === null) {
+            throw $this->_createInvalidArgumentException(
+                $this->__('Null conditions are not supported for native WordPress updates'),
+                null,
+                null,
+                null
+            );
+        }
+
+        if ($condition->isNegated()) {
             throw $this->_createInvalidArgumentException(
                 $this->__('Negated conditions are not supported for native WordPress updates'),
                 null,
@@ -43,22 +53,19 @@ trait WpUpdateCapableTrait
             );
         }
 
-        $postIdField = $this->_getPostIdFieldName();
+        $postIds = $this->_extractPostIdsFromExpression($condition);
 
-        if ($condition === null && !$this->_containerHas($changeSet, $postIdField)) {
+        if (empty($postIds)) {
             throw $this->_createInvalidArgumentException(
-                $this->__('Change set or condition must have an ID'),
+                $this->__('No post IDs were found in the given condition - cannot update all WordPress posts'),
                 null,
                 null,
-                $condition
+                null
             );
         }
 
-        $postIds = ($condition === null)
-            ? [$this->_containerGet($changeSet, $postIdField)]
-            : $this->_extractPostIdsFromExpression($condition);
-
         $postData = $this->_normalizeWpPostDataArray($changeSet);
+        $postIdField = $this->_getPostIdFieldName();
 
         foreach ($postIds as $_postId) {
             $postData[$postIdField] = $_postId;
@@ -72,11 +79,10 @@ trait WpUpdateCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface $postData The post data array or container.
+     * @param array|TermInterface[]|Traversable $postData The post data to normalize. If terms are given, they must be
+     *                                                    {@see LiteralTermInterface} instances.
      *
      * @return array The prepared post data.
-     *
-     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
      */
     abstract protected function _normalizeWpPostDataArray($postData);
 
@@ -101,35 +107,6 @@ trait WpUpdateCapableTrait
      * @return string|Stringable The post ID field name.
      */
     abstract protected function _getPostIdFieldName();
-
-    /**
-     * Retrieves an entry from a container or data set.
-     *
-     * @since [*next-version*]
-     *
-     * @param array|ContainerInterface $container The container or array to retrieve from.
-     * @param string|Stringable        $key       The key of the value to retrieve.
-     *
-     * @return mixed The value mapped to by the key.
-     *
-     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
-     * @throws NotFoundExceptionInterface If the key was not found in the container.
-     */
-    abstract protected function _containerGet($container, $key);
-
-    /**
-     * Checks if a container or data set has a specific entry, by key.
-     *
-     * @since [*next-version*]
-     *
-     * @param array|ContainerInterface $container The container or array to search.
-     * @param string|Stringable        $key       The key to search for.
-     *
-     * @return bool True if the key was found in the container, false if not.
-     *
-     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
-     */
-    abstract protected function _containerHas($container, $key);
 
     /**
      * Wrapper method for the native WordPress post update function.

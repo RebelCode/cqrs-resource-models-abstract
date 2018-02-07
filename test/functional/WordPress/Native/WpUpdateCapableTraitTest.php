@@ -39,8 +39,6 @@ class WpUpdateCapableTraitTest extends TestCase
                 '_normalizeWpPostDataArray',
                 '_extractPostIdsFromExpression',
                 '_getPostIdFieldName',
-                '_containerGet',
-                '_containerHas',
                 '_wpUpdatePost',
                 '_createInvalidArgumentException',
                 '__',
@@ -55,16 +53,6 @@ class WpUpdateCapableTraitTest extends TestCase
         $mock->method('_createInvalidArgumentException')->willReturnCallback(
             function($m, $c, $p) {
                 return new InvalidArgumentException($m, $c, $p);
-            }
-        );
-        $mock->method('_containerGet')->willReturnCallback(
-            function($c, $k) {
-                return $c[$k];
-            }
-        );
-        $mock->method('_containerHas')->willReturnCallback(
-            function($c, $k) {
-                return isset($c[$k]);
             }
         );
 
@@ -174,11 +162,11 @@ class WpUpdateCapableTraitTest extends TestCase
     }
 
     /**
-     * Tests the update method to assert whether the ID in the changeset is used when no condition is given.
+     * Tests the update method to assert whether an exception is thrown when no condition is given.
      *
      * @since [*next-version*]
      */
-    public function testUpdateChangeSetIdNoCondition()
+    public function testUpdateNoCondition()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
@@ -186,10 +174,7 @@ class WpUpdateCapableTraitTest extends TestCase
         $postIdField = uniqid('post-id-');
         $subject->method('_getPostIdFieldName')->willReturn($postIdField);
 
-        $postId = rand(1, 500);
-
         $changeset = [
-            $postIdField           => $postId,
             $f1 = uniqid('field-') => $v1 = uniqid('value-'),
             $f2 = uniqid('field-') => $v2 = uniqid('value-'),
             $f3 = uniqid('field-') => $v3 = uniqid('value-'),
@@ -197,20 +182,21 @@ class WpUpdateCapableTraitTest extends TestCase
 
         $subject->method('_normalizeWpPostDataArray')->willReturnArgument(0);
 
-        $subject->expects($this->once())
+        $subject->expects($this->never())
                 ->method('_wpUpdatePost')
                 ->with($changeset);
+
+        $this->setExpectedException('InvalidArgumentException');
 
         $reflect->_update($changeset);
     }
 
     /**
-     * Tests the update method to assert whether an exception is thrown if no ID is given in the changeset and no
-     * condition is given.
+     * Tests the update method to assert whether an exception is thrown if no ID is found in the given condition.
      *
      * @since [*next-version*]
      */
-    public function testUpdateNoChangeSetIdNoCondition()
+    public function testUpdateNoPostIdsFromCondition()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
@@ -218,14 +204,21 @@ class WpUpdateCapableTraitTest extends TestCase
         $postIdField = uniqid('post-id-');
         $subject->method('_getPostIdFieldName')->willReturn($postIdField);
 
-        $changeset = [
-            $f1 = uniqid('field-') => $v1 = uniqid('value-'),
-            $f2 = uniqid('field-') => $v2 = uniqid('value-'),
-            $f3 = uniqid('field-') => $v3 = uniqid('value-'),
+        $expression = $this->createLogicalExpression(uniqid('type-'), [], false);
+        $subject->expects($this->atLeastOnce())
+                ->method('_extractPostIdsFromExpression')
+                ->with($expression)
+                ->willReturn([]);
+
+        // Input array of post data
+        $input = [
+            uniqid('key-') => uniqid('value-'),
+            uniqid('key-') => uniqid('value-'),
+            uniqid('key-') => uniqid('value-'),
         ];
 
         $this->setExpectedException('InvalidArgumentException');
 
-        $reflect->_update($changeset);
+        $reflect->_update($input, $expression);
     }
 }
