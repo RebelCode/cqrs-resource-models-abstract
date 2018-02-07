@@ -2,6 +2,7 @@
 
 namespace RebelCode\Storage\Resource\Pdo;
 
+use ArrayAccess;
 use Dhii\Util\String\StringableInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -9,6 +10,7 @@ use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 use PDOStatement;
 use Psr\Container\ContainerInterface;
+use stdClass;
 use Traversable;
 
 /**
@@ -23,9 +25,7 @@ trait PdoInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface[]|Traversable $records A list of records to insert. Accept record types are:
-     *                                                        * associative sub-arrays
-     *                                                        * containers
+     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[] $records A list of records to insert.
      *
      * @return PDOStatement The executed PDO statement.
      *
@@ -33,7 +33,7 @@ trait PdoInsertCapableTrait
      */
     protected function _insert($records)
     {
-        $processedRecords = $this->_preprocessRecords($records, $hashValueMap);
+        $processedRecords = $this->_preProcessRecords($records, $hashValueMap);
         $valueHashMap = array_flip($hashValueMap);
 
         $query = $this->_buildInsertSql(
@@ -56,14 +56,16 @@ trait PdoInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param ContainerInterface[]|Traversable $records      An array or traversable of records, as containers.
-     * @param array|null                       $valueHashMap The value hash map to which to write new value hashes.
+     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[] $records      A list of records.
+     * @param array                                                 $valueHashMap A hash-to-value map reference to
+     *                                                                            which new hash-value pairs are
+     *                                                                            written.
      *
      * @return array The pre-processed record data list, as an array of record data associative sub-arrays.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from a record's container.
      */
-    protected function _preprocessRecords($records, &$valueHashMap = [])
+    protected function _preProcessRecords($records, &$valueHashMap = [])
     {
         // Initialize variable, in case it was declared implicitly during the method call
         if ($valueHashMap === null) {
@@ -84,8 +86,9 @@ trait PdoInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface $record       The record data container.
-     * @param array                    $hashValueMap A hash-to-value map to which new hash-value pairs are written.
+     * @param array|ArrayAccess|stdClass|ContainerInterface $record       The record data container.
+     * @param array                                         $hashValueMap A hash-to-value map reference to which new
+     *                                                                    hash-value pairs are written.
      *
      * @return array The extracted record data as an associative array.
      *
