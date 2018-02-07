@@ -31,40 +31,43 @@ trait PdoUpdateCapableTrait
      */
     protected function _update($changeSet, LogicalExpressionInterface $condition = null)
     {
-        $changeSetHashMap = $this->_getSqlUpdateValueHashMap($changeSet);
-
         $fields = array_keys($this->_getSqlUpdateFieldColumnMap());
         $valueHashMap = ($condition !== null)
             ? $this->_getPdoExpressionHashMap($condition, $fields)
             : [];
 
-        $fullHashMap = array_merge($changeSetHashMap, $valueHashMap);
+        $changeSet = $this->_preProcessChangeSet($changeSet, $valueHashMap);
 
         $query = $this->_buildUpdateSql(
             $this->_getSqlUpdateTable(),
             $changeSet,
             $condition,
-            $fullHashMap
+            $valueHashMap
         );
 
-        $statement = $this->_executePdoQuery($query, $changeSetHashMap);
+        $statement = $this->_executePdoQuery($query, array_flip($valueHashMap));
 
         return $statement;
     }
 
     /**
-     * Extracts and retrieves the data hash map from the change set data.
+     * Process the change set to alias field names to column names and populate the value hash map.
      *
      * @since [*next-version*]
      *
-     * @param array|TermInterface[]|Traversable $changeSet The change set, mapping field names to their new values or
-     *                                                     value expressions.
+     * @param array|TermInterface[]|Traversable $changeSet    The change set, mapping field names to their new values or
+     *                                                        value expressions.
+     * @param array                             $valueHashMap The value hash map to populate with new hashes.
      *
-     * @return array The generated value hash map, mapping values to their respective hashes.
+     * @return array The processed change set.
      */
-    protected function _getSqlUpdateValueHashMap($changeSet)
+    protected function _preProcessChangeSet($changeSet, &$valueHashMap = [])
     {
-        $map = [];
+        if ($valueHashMap === null) {
+            $valueHashMap = [];
+        }
+
+        $newChangeSet = [];
         $fcMap = $this->_getSqlUpdateFieldColumnMap();
 
         foreach ($changeSet as $_field => $_value) {
@@ -74,13 +77,18 @@ trait PdoUpdateCapableTrait
             }
             // Get column name for field
             $_column = $fcMap[$_field];
-            // Get hash for term or mixed value
-            $map[$_column] = ($_value instanceof TermInterface)
+            // Get hash for value
+            $_hash = ($_value instanceof TermInterface)
                 ? $this->_getPdoExpressionHashMap($_value)
                 : $this->_getPdoValueHashString($_value);
+            $_valueStr = $this->_normalizeString($_value);
+            // Add to new change set
+            $newChangeSet[$_column] = $_hash;
+            // Add to value hash map
+            $valueHashMap[$_valueStr] = $_hash;
         }
 
-        return $map;
+        return $newChangeSet;
     }
 
     /**
@@ -93,6 +101,22 @@ trait PdoUpdateCapableTrait
      * @return string The string hash.
      */
     abstract protected function _getPdoValueHashString($value);
+
+    /**
+     * Normalizes a value to its string representation.
+     *
+     * The values that can be normalized are any scalar values, as well as
+     * {@see StringableInterface).
+     *
+     * @since [*next-version*]
+     *
+     * @param string|int|float|bool|Stringable $subject The value to normalize to string.
+     *
+     * @throws InvalidArgumentException If the value cannot be normalized.
+     *
+     * @return string The string that resulted from normalization.
+     */
+    abstract protected function _normalizeString($subject);
 
     /**
      * Builds a INSERT SQL query.
