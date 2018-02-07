@@ -41,6 +41,8 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
                                     '_escapeSqlReference',
                                     '_renderSqlExpression',
                                     '_buildSqlWhereClause',
+                                    '_normalizeString',
+                                    '_countIterable',
                                     '_createInvalidArgumentException',
                                     '__',
                                 ]
@@ -51,10 +53,16 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
         $mock->method('_escapeSqlReference')->willReturnArgument(0);
         $mock->method('__')->willReturnArgument(0);
         $mock->method('_createInvalidArgumentException')->willReturnCallback(
-            function ($m, $c, $p) {
+            function($m, $c, $p) {
                 return new InvalidArgumentException($m, $c, $p);
             }
         );
+        $mock->method('_countIterable')->willReturnCallback(
+            function($i) {
+                return count($i);
+            }
+        );
+        $mock->method('_normalizeString')->willReturnArgument(0);
 
         return $mock;
     }
@@ -124,11 +132,11 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
         $reflect = $this->reflect($subject);
 
         $changeSet = [
-            'age' => $cExpr1 = $this->createExpression('plus', ['age', 1]),
+            'age'  => $cExpr1 = $this->createExpression('plus', ['age', 1]),
             'name' => $cExpr2 = $this->createExpression('string', ['foobar']),
         ];
         $valueHashMap = [
-            '1' => ':123',
+            '1'      => ':123',
             'foobar' => ':456',
         ];
         $subject->expects($this->exactly(2))
@@ -148,22 +156,22 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
     }
 
     /**
-     * Tests the UPDATE SQL build method.
+     * Tests the UPDATE SQL build method with a change set of expressions.
      *
      * @since [*next-version*]
      */
-    public function testBuildUpdateSql()
+    public function testBuildUpdateSqlExpressions()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
         $table = 'my_table';
         $changeSet = [
-            'age' => $cExpr1 = $this->createExpression('plus', ['age', 1]),
+            'age'  => $cExpr1 = $this->createExpression('plus', ['age', 1]),
             'name' => $cExpr2 = $this->createExpression('string', ['foobar']),
         ];
         $valueHashMap = [
-            '1' => ':123',
+            '1'      => ':123',
             'foobar' => ':456',
         ];
         $subject->expects($this->exactly(2))
@@ -192,6 +200,43 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
     }
 
     /**
+     * Tests the UPDATE SQL build method with a change set of values.
+     *
+     * @since [*next-version*]
+     */
+    public function testBuildUpdateSqlValues()
+    {
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+
+        $table = 'my_table';
+        $changeSet = [
+            'name'    => 'foo',
+            'surname' => 'bar',
+        ];
+        $valueHashMap = [
+            '10'  => ':123',
+            'foo' => ':456',
+        ];
+        $set = 'SET name = :456, surname = "bar"';
+
+        $condition = $this->createLogicalExpression('equal', ['age', 10]);
+        $where = 'WHERE age = :123';
+        $subject->expects($this->once())
+                ->method('_buildSqlWhereClause')
+                ->with($condition, $valueHashMap)
+                ->willReturn($where);
+
+        $expected = "UPDATE $table $set $where;";
+
+        $this->assertEquals(
+            $expected,
+            $reflect->_buildUpdateSql($table, $changeSet, $condition, $valueHashMap),
+            'Expected and retrieved UPDATE queries do not match.'
+        );
+    }
+
+    /**
      * Tests the UPDATE SQL build method without a condition.
      *
      * @since [*next-version*]
@@ -203,11 +248,11 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
 
         $table = 'my_table';
         $changeSet = [
-            'age' => $cExpr1 = $this->createExpression('plus', ['age', 1]),
+            'age'  => $cExpr1 = $this->createExpression('plus', ['age', 1]),
             'name' => $cExpr2 = $this->createExpression('string', ['foobar']),
         ];
         $valueHashMap = [
-            '1' => ':123',
+            '1'      => ':123',
             'foobar' => ':456',
         ];
         $subject->expects($this->exactly(2))
