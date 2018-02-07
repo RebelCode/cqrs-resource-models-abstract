@@ -4,10 +4,12 @@ namespace RebelCode\Storage\Resource\Pdo;
 
 use Dhii\Expression\ExpressionInterface;
 use Dhii\Expression\LogicalExpressionInterface;
+use Dhii\Expression\TermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
 use InvalidArgumentException;
 use PDOStatement;
+use Traversable;
 
 /**
  * Common functionality for objects that can update records in a database using PDO.
@@ -21,25 +23,17 @@ trait PdoUpdateCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array                           $changeSet A map of field names mapping to the values to change.
-     * @param LogicalExpressionInterface|null $condition Optional condition that records must satisfy to be updated.
+     * @param array|TermInterface[]|Traversable $changeSet The change set, mapping field names to their new values or
+     *                                                     value expressions.
+     * @param LogicalExpressionInterface|null   $condition Optional condition that records must satisfy to be updated.
      *
      * @return PDOStatement The executed PDO statement.
      */
-    protected function _update(array $changeSet, LogicalExpressionInterface $condition = null)
+    protected function _update($changeSet, LogicalExpressionInterface $condition = null)
     {
-        if (count($changeSet) === 0) {
-            throw $this->_createInvalidArgumentException(
-                $this->__('Update set cannot be empty'),
-                null,
-                null,
-                $changeSet
-            );
-        }
-
         $changeSetHashMap = $this->_getSqlUpdateValueHashMap($changeSet);
 
-        $fields       = array_keys($this->_getSqlUpdateFieldColumnMap());
+        $fields = array_keys($this->_getSqlUpdateFieldColumnMap());
         $valueHashMap = ($condition !== null)
             ? $this->_getPdoExpressionHashMap($condition, $fields)
             : [];
@@ -63,23 +57,27 @@ trait PdoUpdateCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array $changeSet An associative array mapping field names to their changed values.
+     * @param array|TermInterface[]|Traversable $changeSet The change set, mapping field names to their new values or
+     *                                                     value expressions.
      *
      * @return array The generated value hash map, mapping values to their respective hashes.
      */
-    protected function _getSqlUpdateValueHashMap(array $changeSet)
+    protected function _getSqlUpdateValueHashMap($changeSet)
     {
         $map = [];
+        $fcMap = $this->_getSqlUpdateFieldColumnMap();
 
-        foreach ($this->_getSqlUpdateFieldColumnMap() as $_field => $_column) {
-            if (!isset($changeSet[$_field])) {
+        foreach ($changeSet as $_field => $_value) {
+            // If unknown field name, skip
+            if (!isset($fcMap[$_field])) {
                 continue;
             }
-
-            $_value = $changeSet[$_field];
-            $_hash  = $this->_getPdoValueHashString($_value);
-
-            $map[$_column] = $_hash;
+            // Get column name for field
+            $_column = $fcMap[$_field];
+            // Get hash for term or mixed value
+            $map[$_column] = ($_value instanceof TermInterface)
+                ? $this->_getPdoExpressionHashMap($_value)
+                : $this->_getPdoValueHashString($_value);
         }
 
         return $map;

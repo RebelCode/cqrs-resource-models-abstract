@@ -189,21 +189,4 @@ class PdoUpdateCapableTraitTest extends TestCase
 
         $this->assertSame($statement, $result, 'Retrieved result is not the PDO statement instance.');
     }
-
-    /**
-     * Tests the PDO UPDATE query method with an empty change set.
-     *
-     * @since [*next-version*]
-     */
-    public function testUpdateNoChangeSet()
-    {
-        $subject = $this->createInstance();
-        $reflect = $this->reflect($subject);
-
-        $changeSet = [];
-
-        $this->setExpectedException('InvalidArgumentException');
-
-        $reflect->_update($changeSet);
-    }
 }
