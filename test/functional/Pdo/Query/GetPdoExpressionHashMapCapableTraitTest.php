@@ -111,7 +111,7 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
     }
 
     /**
-     * Tests thee expression value hash map getter method to assert whether the retrieved hash map contains the
+     * Tests the expression value hash map getter method to assert whether the retrieved hash map contains the
      * correct value to hash mappings.
      *
      * @since [*next-version*]
@@ -141,6 +141,24 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
         $this->assertArrayHasKey('b', $result, 'Retrieved hash map does not contain hash for "b".');
         $this->assertArrayHasKey('c', $result, 'Retrieved hash map does not contain hash for "c".');
         $this->assertArrayNotHasKey('d', $result, 'Retrieved hash map incorrectly hash hash for "d".');
+    }
+
+    /**
+     * Tests the expression value hash map getter method with a term condition to assert whether the retrieved hash
+     * map contains the hash for the term's value.
+     *
+     * @since [*next-version*]
+     */
+    public function testGetExpressionValueHashMapTerm()
+    {
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+
+        $expression = $this->createLiteralTerm('a');
+
+        $result = $reflect->_getPdoExpressionHashMap($expression, []);
+
+        $this->assertArrayHasKey('a', $result, 'Retrieved hash map does not contain hash for "a".');
     }
 
     /**
@@ -176,5 +194,23 @@ class GetPdoExpressionHashMapCapableTraitTest extends TestCase
 
         $this->assertArrayNotHasKey('b', $result, 'Retrieved hash contains hash for "b".');
         $this->assertArrayNotHasKey('d', $result, 'Retrieved hash contains hash for "d".');
+    }
+
+    /**
+     * Tests the expression value hash map getter method with a term condition to assert whether the retrieved hash
+     * map does not contain the hash for the term's value when its ignored.
+     *
+     * @since [*next-version*]
+     */
+    public function testGetExpressionValueHashMapTermIgnore()
+    {
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+
+        $expression = $this->createLiteralTerm('a');
+
+        $result = $reflect->_getPdoExpressionHashMap($expression, ['a']);
+
+        $this->assertArrayNotHasKey('a', $result, 'Retrieved hash map contains hash for "a".');
     }
 }
