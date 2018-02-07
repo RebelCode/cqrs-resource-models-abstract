@@ -37,12 +37,9 @@ class WpdbUpdateCapableTraitTest extends TestCase
         $methods = $this->mergeValues(
             $methods,
             [
-                '_containerGet',
-                '_containerHas',
                 '_getWpdbValueHashString',
                 '_buildUpdateSql',
                 '_getSqlUpdateTable',
-                '_getSqlSelectFieldNames',
                 '_getSqlUpdateFieldColumnMap',
                 '_getWpdbExpressionHashMap',
                 '_executeWpdbQuery',
@@ -57,16 +54,6 @@ class WpdbUpdateCapableTraitTest extends TestCase
                      ->setMethods($methods)
                      ->getMockForTrait();
 
-        $mock->method('_containerGet')->willReturnCallback(
-            function($c, $k) {
-                return $c[$k];
-            }
-        );
-        $mock->method('_containerHas')->willReturnCallback(
-            function($c, $k) {
-                return isset($c[$k]);
-            }
-        );
         $mock->method('_createInvalidArgumentException')->willReturnCallback(
             function($m, $c, $p) {
                 return new InvalidArgumentException($m, $c, $p);
@@ -165,7 +152,6 @@ class WpdbUpdateCapableTraitTest extends TestCase
             $field2 => $col2 = uniqid('column-'),
             $field3 => $col3 = uniqid('column-'),
         ];
-        $subject->method('_getSqlSelectFieldNames')->willReturn($fields);
         $subject->method('_getSqlUpdateTable')->willReturn($table);
         $subject->method('_getSqlUpdateFieldColumnMap')->willReturn($fieldColumnMap);
 
