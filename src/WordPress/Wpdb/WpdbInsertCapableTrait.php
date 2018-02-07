@@ -2,11 +2,14 @@
 
 namespace RebelCode\Storage\Resource\WordPress\Wpdb;
 
+use ArrayAccess;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
+use OutOfRangeException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use stdClass;
 use Traversable;
 
 /**
@@ -21,9 +24,7 @@ trait WpdbInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface[]|Traversable $records A list of records to insert. Accept record types are:
-     *                                                        * associative sub-arrays
-     *                                                        * containers
+     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[]|Traversable $records A list of records to insert.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from a record's container.
      */
@@ -46,8 +47,11 @@ trait WpdbInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param ContainerInterface[]|Traversable $records      An array or traversable of records, as containers.
-     * @param array|null                       $valueHashMap The value hash map to which to write new value hashes.
+     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[]|Traversable $records      A list of records.
+     * @param array                                                             $valueHashMap A hash-to-value map
+     *                                                                                        reference to which new
+     *                                                                                        hash-value pairs are
+     *                                                                                        written.
      *
      * @return array The pre-processed record data list, as an array of record data associative sub-arrays.
      *
@@ -74,8 +78,9 @@ trait WpdbInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface $record       The record data container.
-     * @param array                    $valueHashMap A value-to-hash map to which new value-hash pairs are written.
+     * @param array|ArrayAccess|stdClass|ContainerInterface $record       The record data container.
+     * @param array                                         $valueHashMap A value-to-hash map reference to which new
+     *                                                                    value-hash pairs are written.
      *
      * @return array The extracted record data as an associative array.
      *
@@ -83,6 +88,11 @@ trait WpdbInsertCapableTrait
      */
     protected function _extractRecordData($record, array &$valueHashMap = [])
     {
+        // Initialize variable, in case it was declared implicitly during the method call
+        if ($valueHashMap === null) {
+            $valueHashMap = [];
+        }
+
         $result = [];
 
         foreach ($this->_getSqlInsertFieldColumnMap() as $_field => $_column) {
@@ -95,7 +105,9 @@ trait WpdbInsertCapableTrait
                 $valueHashMap[$_valueStr] = $_valueHash;
                 // Add column-to-value entry to record data
                 $result[$_column] = $_value;
-            } catch (NotFoundExceptionInterface $nfe) {
+            } catch (NotFoundExceptionInterface $notFoundException) {
+                continue;
+            } catch (OutOfRangeException $outOfRangeException) {
                 continue;
             }
         }
@@ -104,31 +116,33 @@ trait WpdbInsertCapableTrait
     }
 
     /**
-     * Retrieves an entry from a container or data set.
+     * Retrieves a value from a container or data set.
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface $container The container or array to retrieve from.
-     * @param string|Stringable        $key       The key of the value to retrieve.
+     * @param array|ArrayAccess|stdClass|ContainerInterface $container The container to read from.
+     * @param string|int|float|bool|Stringable              $key       The key of the value to retrieve.
      *
-     * @return mixed The value mapped to by the key.
-     *
+     * @throws InvalidArgumentException    If container is invalid.
      * @throws ContainerExceptionInterface If an error occurred while reading from the container.
-     * @throws NotFoundExceptionInterface If the key was not found in the container.
+     * @throws NotFoundExceptionInterface  If the key was not found in the container.
+     *
+     * @return mixed The value mapped to the given key.
      */
     abstract protected function _containerGet($container, $key);
 
     /**
-     * Checks if a container or data set has a specific entry, by key.
+     * Retrieves an entry from a container or data set.
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface $container The container or array to search.
-     * @param string|Stringable        $key       The key to search for.
-     *
-     * @return bool True if the key was found in the container, false if not.
+     * @param array|ArrayAccess|stdClass|ContainerInterface $container The container to read from.
+     * @param string|int|float|bool|Stringable              $key       The key of the value to retrieve.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from the container.
+     * @throws OutOfRangeException         If the container or the key is invalid.
+     *
+     * @return bool True if the container has an entry for the given key, false if not.
      */
     abstract protected function _containerHas($container, $key);
 

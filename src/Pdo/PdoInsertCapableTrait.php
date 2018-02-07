@@ -4,6 +4,7 @@ namespace RebelCode\Storage\Resource\Pdo;
 
 use ArrayAccess;
 use Dhii\Util\String\StringableInterface;
+use OutOfRangeException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
@@ -25,7 +26,7 @@ trait PdoInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[] $records A list of records to insert.
+     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[]|Traversable $records A list of records to insert.
      *
      * @return PDOStatement The executed PDO statement.
      *
@@ -33,8 +34,7 @@ trait PdoInsertCapableTrait
      */
     protected function _insert($records)
     {
-        $processedRecords = $this->_preProcessRecords($records, $hashValueMap);
-        $valueHashMap = array_flip($hashValueMap);
+        $processedRecords = $this->_preProcessRecords($records, $valueHashMap);
 
         $query = $this->_buildInsertSql(
             $this->_getSqlInsertTable(),
@@ -43,10 +43,7 @@ trait PdoInsertCapableTrait
             $valueHashMap
         );
 
-        $statement = $this->_executePdoQuery(
-            $query,
-            $hashValueMap
-        );
+        $statement = $this->_executePdoQuery($query, array_flip($valueHashMap));
 
         return $statement;
     }
@@ -56,10 +53,11 @@ trait PdoInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[] $records      A list of records.
-     * @param array                                                 $valueHashMap A hash-to-value map reference to
-     *                                                                            which new hash-value pairs are
-     *                                                                            written.
+     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[]|Traversable $records      A list of records.
+     * @param array                                                             $valueHashMap A hash-to-value map
+     *                                                                                        reference to which new
+     *                                                                                        hash-value pairs are
+     *                                                                                        written.
      *
      * @return array The pre-processed record data list, as an array of record data associative sub-arrays.
      *
@@ -87,15 +85,20 @@ trait PdoInsertCapableTrait
      * @since [*next-version*]
      *
      * @param array|ArrayAccess|stdClass|ContainerInterface $record       The record data container.
-     * @param array                                         $hashValueMap A hash-to-value map reference to which new
-     *                                                                    hash-value pairs are written.
+     * @param array                                         $valueHashMap A value-to-hash map reference to which new
+     *                                                                    value-hash pairs are written.
      *
      * @return array The extracted record data as an associative array.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from the record container.
      */
-    protected function _extractRecordData($record, array &$hashValueMap = [])
+    protected function _extractRecordData($record, &$valueHashMap = [])
     {
+        // Initialize variable, in case it was declared implicitly during the method call
+        if ($valueHashMap === null) {
+            $valueHashMap = [];
+        }
+
         $result = [];
 
         foreach ($this->_getSqlInsertFieldColumnMap() as $_field => $_column) {
@@ -104,11 +107,13 @@ trait PdoInsertCapableTrait
                 // Calculate hash for value
                 $_valueStr = $this->_normalizeString($_value);
                 $_valueHash = $this->_getPdoValueHashString($_valueStr);
-                // Add hash-to-value entry to map
-                $hashValueMap[$_valueHash] = $_valueStr;
+                // Add value-to-hash entry to map
+                $valueHashMap[$_valueStr] = $_valueHash;
                 // Add column-to-value entry to record data
                 $result[$_column] = $_value;
-            } catch (NotFoundExceptionInterface $nfe) {
+            } catch (NotFoundExceptionInterface $notFoundException) {
+                continue;
+            } catch (OutOfRangeException $outOfRangeException) {
                 continue;
             }
         }
@@ -117,31 +122,33 @@ trait PdoInsertCapableTrait
     }
 
     /**
-     * Retrieves an entry from a container or data set.
+     * Retrieves a value from a container or data set.
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface   $container The container or array to retrieve from.
-     * @param string|StringableInterface $key       The key of the value to retrieve.
+     * @param array|ArrayAccess|stdClass|ContainerInterface $container The container to read from.
+     * @param string|int|float|bool|Stringable              $key       The key of the value to retrieve.
      *
-     * @return mixed The value mapped to by the key.
-     *
+     * @throws InvalidArgumentException    If container is invalid.
      * @throws ContainerExceptionInterface If an error occurred while reading from the container.
-     * @throws NotFoundExceptionInterface If the key was not found in the container.
+     * @throws NotFoundExceptionInterface  If the key was not found in the container.
+     *
+     * @return mixed The value mapped to the given key.
      */
     abstract protected function _containerGet($container, $key);
 
     /**
-     * Checks if a container or data set has a specific entry, by key.
+     * Retrieves an entry from a container or data set.
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface   $container The container or array to search.
-     * @param string|StringableInterface $key       The key to search for.
-     *
-     * @return bool True if the key was found in the container, false if not.
+     * @param array|ArrayAccess|stdClass|ContainerInterface $container The container to read from.
+     * @param string|int|float|bool|Stringable              $key       The key of the value to retrieve.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from the container.
+     * @throws OutOfRangeException         If the container or the key is invalid.
+     *
+     * @return bool True if the container has an entry for the given key, false if not.
      */
     abstract protected function _containerHas($container, $key);
 
