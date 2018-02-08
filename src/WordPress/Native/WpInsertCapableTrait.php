@@ -2,11 +2,11 @@
 
 namespace RebelCode\Storage\Resource\WordPress\Native;
 
-use Dhii\Util\String\StringableInterface as Stringable;
+use ArrayAccess;
 use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use stdClass;
 use Traversable;
 use WP_Error;
 
@@ -22,7 +22,7 @@ trait WpInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface[]|Traversable $posts A list of posts to insert, either as arrays or containers.
+     * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[]|Traversable $posts A list of posts to insert.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from a container posts.
      * @throws InvalidArgumentException If the argument is not an array, traversable or container.
@@ -39,7 +39,7 @@ trait WpInsertCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array|ContainerInterface $postData The post data array or container.
+     * @param array|ArrayAccess|stdClass|ContainerInterface $postData The post data container.
      *
      * @return array The prepared post data.
      *
