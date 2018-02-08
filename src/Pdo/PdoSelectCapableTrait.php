@@ -46,7 +46,7 @@ trait PdoSelectCapableTrait
             $valueHashMap
         );
 
-        return $this->_executePdoQuery($query, $valueHashMap)->fetchAll(PDO::FETCH_ASSOC);
+        return $this->_executePdoQuery($query, array_flip($valueHashMap))->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**

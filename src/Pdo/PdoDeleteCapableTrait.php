@@ -37,7 +37,7 @@ trait PdoDeleteCapableTrait
             $valueHashMap
         );
 
-        $statement = $this->_executePdoQuery($query, $valueHashMap);
+        $statement = $this->_executePdoQuery($query, array_flip($valueHashMap));
 
         return $statement;
     }
