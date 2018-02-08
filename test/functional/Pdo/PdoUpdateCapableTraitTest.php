@@ -61,11 +61,6 @@ class PdoUpdateCapableTraitTest extends TestCase
                 return new InvalidArgumentException($m, $c, $p);
             }
         );
-        $mock->method('_getPdoValueHashString')->willReturnCallback(
-            function ($input) {
-                return ':'.hash('crc32b', strval($input));
-            }
-        );
 
         return $mock;
     }
@@ -131,13 +126,24 @@ class PdoUpdateCapableTraitTest extends TestCase
                 'age' => 'age',
             ]
         );
+
+        $subject->method('_getPdoValueHashString')->willReturnOnConsecutiveCalls(
+            $h1 = uniqid('hash-'),
+            $h2 = uniqid('hash-')
+        );
+
+        $processedChangeSet = [
+            'surname' => $h1,
+            'age'     => $h2
+        ];
+
         $subject->expects($this->once())
                 ->method('_getPdoExpressionHashMap')
                 ->with($condition, array_keys($map))
                 ->willReturn([]);
         $subject->expects($this->once())
                 ->method('_buildUpdateSql')
-                ->with($table, $changeSet, $condition, $this->anything())
+                ->with($table, $processedChangeSet, $condition, $this->anything())
                 ->willReturn('UPDATE `users` SET `surname` = "bar", `age` = 21 WHERE `id` = 5');
 
         $statement = $this->getMockBuilder('PDOStatement')
@@ -175,35 +181,31 @@ class PdoUpdateCapableTraitTest extends TestCase
                 'age' => 'age',
             ]
         );
+
+        $subject->method('_getPdoValueHashString')->willReturnOnConsecutiveCalls(
+            $h1 = uniqid('hash-'),
+            $h2 = uniqid('hash-')
+        );
+
+        $processedChangeSet = [
+            'surname' => $h1,
+            'age'     => $h2
+        ];
+
         $subject->expects($this->once())
                 ->method('_buildUpdateSql')
-                ->with($table, $changeSet, $condition, $this->anything())
+                ->with($table, $processedChangeSet, $condition, $this->anything())
                 ->willReturn('UPDATE `users` SET `surname` = "bar", `age` = 21');
 
         $statement = $this->getMockBuilder('PDOStatement')
                           ->setMethods(['execute'])
                           ->getMockForAbstractClass();
-        $subject->method('_executePdoQuery')->willReturn($statement);
+        $subject->expects($this->once())
+                ->method('_executePdoQuery')
+                ->willReturn($statement);
 
         $result = $reflect->_update($changeSet);
 
         $this->assertSame($statement, $result, 'Retrieved result is not the PDO statement instance.');
-    }
-
-    /**
-     * Tests the PDO UPDATE query method with an empty change set.
-     *
-     * @since [*next-version*]
-     */
-    public function testUpdateNoChangeSet()
-    {
-        $subject = $this->createInstance();
-        $reflect = $this->reflect($subject);
-
-        $changeSet = [];
-
-        $this->setExpectedException('InvalidArgumentException');
-
-        $reflect->_update($changeSet);
     }
 }

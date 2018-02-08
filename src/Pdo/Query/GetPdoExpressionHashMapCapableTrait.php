@@ -4,6 +4,7 @@ namespace RebelCode\Storage\Resource\Pdo\Query;
 
 use Dhii\Expression\ExpressionInterface;
 use Dhii\Expression\LiteralTermInterface;
+use Dhii\Expression\TermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
 
@@ -19,32 +20,34 @@ trait GetPdoExpressionHashMapCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param ExpressionInterface   $condition The condition instance.
-     * @param string[]|Stringable[] $ignore    A list of term names to ignore, typically column names.
+     * @param TermInterface         $condition    The condition instance.
+     * @param string[]|Stringable[] $ignore       A list of term names to ignore, typically column names.
+     * @param array                 $valueHashMap The value hash map reference to write to.
      *
      * @return array A map of value names to their respective hashes.
      */
-    protected function _getPdoExpressionHashMap(ExpressionInterface $condition, array $ignore = [])
+    protected function _getPdoExpressionHashMap(TermInterface $condition, array $ignore = [], array &$valueHashMap = [])
     {
-        $values = [];
+        if ($valueHashMap === null) {
+            $valueHashMap = [];
+        }
 
-        foreach ($condition->getTerms() as $_idx => $_term) {
-            if ($_term instanceof ExpressionInterface) {
-                $values = array_merge($values, $this->_getPdoExpressionHashMap($_term, $ignore));
+        if ($condition instanceof LiteralTermInterface) {
+            $value = $condition->getValue();
+            $value = $this->_normalizeString($value);
 
-                continue;
-            }
-
-            if ($_term instanceof LiteralTermInterface) {
-                $_termStr = $this->_normalizeString($_term->getValue());
-
-                if (!in_array($_termStr, $ignore)) {
-                    $values[$_termStr] = $this->_getPdoValueHashString($_termStr);
-                }
+            if (!in_array($value, $ignore)) {
+                $valueHashMap[$value] = $this->_getPdoValueHashString($value);
             }
         }
 
-        return $values;
+        if ($condition instanceof ExpressionInterface) {
+            foreach ($condition->getTerms() as $_idx => $_term) {
+                $this->_getPdoExpressionHashMap($_term, $ignore, $valueHashMap);
+            }
+        }
+
+        return $valueHashMap;
     }
 
     /**

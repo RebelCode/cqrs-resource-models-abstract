@@ -1,6 +1,6 @@
 <?php
 
-namespace RebelCode\Storage\Resource\WordPress\FuncTest;
+namespace RebelCode\Storage\Resource\WordPress\Native\FuncTest;
 
 use Dhii\Expression\LogicalExpressionInterface;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -19,7 +19,7 @@ class WpSelectCapableTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\WordPress\WpSelectCapableTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\WordPress\Native\WpSelectCapableTrait';
 
     /**
      * Creates a new instance of the test subject.
