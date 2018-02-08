@@ -3,8 +3,8 @@
 namespace RebelCode\Storage\Resource\Pdo;
 
 use Dhii\Config\Exception\ConfigExceptionInterface;
-use Dhii\Expression\ExpressionInterface;
 use Dhii\Expression\LogicalExpressionInterface;
+use Dhii\Expression\TermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use PDO;
 use PDOStatement;
@@ -114,12 +114,17 @@ trait PdoSelectCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param ExpressionInterface   $condition The condition instance.
-     * @param string[]|Stringable[] $ignore    A list of term names to ignore, typically column names.
+     * @param TermInterface         $condition    The condition instance.
+     * @param string[]|Stringable[] $ignore       A list of term names to ignore, typically column names.
+     * @param array                 $valueHashMap The value hash map reference to write to.
      *
      * @return array A map of value names to their respective hashes.
      */
-    abstract protected function _getPdoExpressionHashMap(ExpressionInterface $condition, array $ignore = []);
+    abstract protected function _getPdoExpressionHashMap(
+        TermInterface $condition,
+        array $ignore = [],
+        array &$valueHashMap = []
+    );
 
     /**
      * Executes a given SQL query using PDO.
