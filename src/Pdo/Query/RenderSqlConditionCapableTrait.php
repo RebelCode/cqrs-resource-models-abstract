@@ -6,7 +6,6 @@ use Dhii\Expression\LogicalExpressionInterface;
 use Dhii\Output\Exception\RendererExceptionInterface;
 use Dhii\Output\Exception\TemplateRenderExceptionInterface;
 use Dhii\Output\TemplateInterface;
-use Dhii\Storage\Resource\Sql\EntityFieldInterface;
 use Dhii\Storage\Resource\Sql\Expression\SqlExpressionContextInterface as SqlCtx;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
@@ -73,7 +72,7 @@ trait RenderSqlConditionCapableTrait
      *
      * @since [*next-version*]
      *
-     * @return EntityFieldInterface[] A map of field names mapping to entity field instances.
+     * @return string[]|Stringable[] A map of field names mapping to entity field instances.
      */
     abstract protected function _getSqlFieldColumnMap();
 

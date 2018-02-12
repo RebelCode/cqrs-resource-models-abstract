@@ -151,8 +151,8 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                 ->method('_getSqlFieldColumnMap')
                 ->willReturn(
                     $columnMap = [
-                        'a' => $this->createEntityField('t', 'col_a'),
-                        'c' => $this->createEntityField('t', 'col_c'),
+                        'a' => 'col_a',
+                        'c' => 'col_c',
                     ]
                 );
 
