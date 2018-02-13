@@ -54,7 +54,7 @@ class SqlFieldNamesAwareTraitTest extends TestCase
     }
 
     /**
-     * Tests the getter and setter methods to ensure correct assignment and retrieval.
+     * Tests the getter method to ensure that the correct values are retrieved.
      *
      * @since [*next-version*]
      */
