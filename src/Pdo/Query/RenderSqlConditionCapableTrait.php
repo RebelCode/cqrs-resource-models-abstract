@@ -33,7 +33,7 @@ trait RenderSqlConditionCapableTrait
      */
     protected function _renderSqlCondition(LogicalExpressionInterface $condition, array $valueHashMap = [])
     {
-        $template = $this->_getSqlConditionTemplate($condition);
+        $template = $this->_getTemplateForSqlCondition($condition);
 
         if ($template === null) {
             throw $this->_createInvalidArgumentException(
@@ -65,7 +65,7 @@ trait RenderSqlConditionCapableTrait
      * @return TemplateInterface|null The template renderer instance, or null if a template renderer could not be
      *                                resolved for the given condition.
      */
-    abstract protected function _getSqlConditionTemplate(LogicalExpressionInterface $condition = null);
+    abstract protected function _getTemplateForSqlCondition(LogicalExpressionInterface $condition = null);
 
     /**
      * Retrieves the mapping of field names to table columns.

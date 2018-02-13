@@ -40,7 +40,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                             array_merge(
                                 $methods,
                                 [
-                                    '_getSqlConditionTemplate',
+                                    '_getTemplateForSqlCondition',
                                     '_getSqlFieldColumnMap',
                                     '_createInvalidArgumentException',
                                     '__',
@@ -169,7 +169,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                  ->willReturn($output);
 
         $subject->expects($this->once())
-                ->method('_getSqlConditionTemplate')
+                ->method('_getTemplateForSqlCondition')
                 ->with($condition)
                 ->willReturn($template);
 
@@ -196,7 +196,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
         ];
 
         $subject->expects($this->once())
-                ->method('_getSqlConditionTemplate')
+                ->method('_getTemplateForSqlCondition')
                 ->with($condition)
                 ->willReturn(null);
 
