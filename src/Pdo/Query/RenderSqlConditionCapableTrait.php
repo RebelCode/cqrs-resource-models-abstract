@@ -60,12 +60,12 @@ trait RenderSqlConditionCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param LogicalExpressionInterface $condition The condition to render.
+     * @param LogicalExpressionInterface|null $condition The condition to render.
      *
      * @return TemplateInterface|null The template renderer instance, or null if a template renderer could not be
      *                                resolved for the given condition.
      */
-    abstract protected function _getSqlConditionTemplate(LogicalExpressionInterface $condition);
+    abstract protected function _getSqlConditionTemplate(LogicalExpressionInterface $condition = null);
 
     /**
      * Retrieves the mapping of field names to table columns.
