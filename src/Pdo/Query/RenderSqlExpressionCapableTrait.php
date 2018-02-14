@@ -2,7 +2,7 @@
 
 namespace RebelCode\Storage\Resource\Pdo\Query;
 
-use Dhii\Expression\LogicalExpressionInterface;
+use Dhii\Expression\TermInterface;
 use Dhii\Output\Exception\RendererExceptionInterface;
 use Dhii\Output\Exception\TemplateRenderExceptionInterface;
 use Dhii\Output\TemplateInterface;
@@ -12,60 +12,60 @@ use Exception as RootException;
 use InvalidArgumentException;
 
 /**
- * A simple default SQL render functionality trait that simply delegates to a template renderer.
+ * Common simple functionality for rendering SQL expressions by delegating to a template renderer.
  *
  * @since [*next-version*]
  */
-trait RenderSqlConditionCapableTrait
+trait RenderSqlExpressionCapableTrait
 {
     /**
-     * Renders an expression as an SQL condition.
+     * Renders an SQL expression.
      *
      * @since [*next-version*]
      *
-     * @param LogicalExpressionInterface $condition    The condition to render.
-     * @param string[]|Stringable[]      $valueHashMap Optional mapping of term names to their hashes.
+     * @param TermInterface         $expression   The expression to render.
+     * @param string[]|Stringable[] $valueHashMap Optional mapping of term names to their hashes.
      *
      * @throws RendererExceptionInterface       If an error occurred while rendering.
      * @throws TemplateRenderExceptionInterface If the renderer failed to render the expression and context.
      *
-     * @return string|Stringable The rendered condition.
+     * @return string|Stringable The rendered expression.
      */
-    protected function _renderSqlCondition(LogicalExpressionInterface $condition, array $valueHashMap = [])
+    protected function _renderSqlExpression(TermInterface $expression, array $valueHashMap = [])
     {
-        $template = $this->_getTemplateForSqlCondition($condition);
+        $template = $this->_getTemplateForSqlExpression($expression);
 
         if ($template === null) {
             throw $this->_createInvalidArgumentException(
-                $this->__('Could not get a template renderer to render given condition'),
+                $this->__('Could not get a template renderer to render given expression'),
                 null,
                 null,
-                $condition
+                $expression
             );
         }
 
         $columnMap = $this->_getSqlFieldColumnMap();
         $aliases = array_merge($columnMap, $valueHashMap);
 
-        $context   = [
-            SqlCtx::K_EXPRESSION  => $condition,
-            SqlCtx::K_ALIASES_MAP => $aliases
+        $context = [
+            SqlCtx::K_EXPRESSION  => $expression,
+            SqlCtx::K_ALIASES_MAP => $aliases,
         ];
 
         return $template->render($context);
     }
 
     /**
-     * Retrieves a template renderer instance that can renderer the given condition.
+     * Retrieves a template renderer instance that can renderer the given expression.
      *
      * @since [*next-version*]
      *
-     * @param LogicalExpressionInterface $condition The condition to render.
+     * @param TermInterface $expression The expression to render.
      *
      * @return TemplateInterface|null The template renderer instance, or null if a template renderer could not be
-     *                                resolved for the given condition.
+     *                                resolved for the given expression.
      */
-    abstract protected function _getTemplateForSqlCondition(LogicalExpressionInterface $condition);
+    abstract protected function _getTemplateForSqlExpression(TermInterface $expression);
 
     /**
      * Retrieves the mapping of field names to table columns.

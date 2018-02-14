@@ -11,18 +11,18 @@ use PHPUnit_Framework_MockObject_MockObject;
 use Xpmock\TestCase;
 
 /**
- * Tests {@see RebelCode\Storage\Resource\Pdo\Query\RenderSqlConditionCapableTrait}.
+ * Tests {@see RebelCode\Storage\Resource\Pdo\Query\RenderSqlExpressionCapableTrait}.
  *
  * @since [*next-version*]
  */
-class RenderSqlConditionCapableTraitTest extends TestCase
+class RenderSqlExpressionCapableTraitTest extends TestCase
 {
     /**
      * The class name of the test subject.
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\Query\RenderSqlConditionCapableTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\Query\RenderSqlExpressionCapableTrait';
 
     /**
      * Creates a new instance of the test subject.
@@ -40,7 +40,7 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                             array_merge(
                                 $methods,
                                 [
-                                    '_getTemplateForSqlCondition',
+                                    '_getTemplateForSqlExpression',
                                     '_getSqlFieldColumnMap',
                                     '_createInvalidArgumentException',
                                     '__',
@@ -64,18 +64,14 @@ class RenderSqlConditionCapableTraitTest extends TestCase
      *
      * @since [*next-version*]
      *
-     * @param string $type    The expression type.
-     * @param array  $terms   The expression terms.
-     * @param bool   $negated Optional negation flag.
+     * @param string $type The expression type.
      *
      * @return LogicalExpressionInterface The created expression instance.
      */
-    public function createLogicalExpression($type, $terms, $negated = false)
+    public function createExpression($type)
     {
-        return $this->mock('Dhii\Expression\LogicalExpressionInterface')
+        return $this->mock('Dhii\Expression\TermInterface')
                     ->getType($type)
-                    ->getTerms($terms)
-                    ->isNegated($negated)
                     ->new();
     }
 
@@ -131,17 +127,17 @@ class RenderSqlConditionCapableTraitTest extends TestCase
     }
 
     /**
-     * Tests the SQL condition render method to assert whether the result is the output of the template renderer.
+     * Tests the SQL expression render method to assert whether the result is the output of the template renderer.
      *
      * @since [*next-version*]
      */
-    public function testRenderSqlCondition()
+    public function testRenderSqlExpression()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
         // Method args
-        $condition = $this->createLogicalExpression('test', []);
+        $expression = $this->createExpression('test');
         $valueHashMap = [
             'e' => ':123',
             'f' => ':456',
@@ -162,46 +158,46 @@ class RenderSqlConditionCapableTraitTest extends TestCase
                  ->method('render')
                  ->with(
                      [
-                         SqlCtx::K_EXPRESSION  => $condition,
+                         SqlCtx::K_EXPRESSION  => $expression,
                          SqlCtx::K_ALIASES_MAP => array_merge($columnMap, $valueHashMap),
                      ]
                  )
                  ->willReturn($output);
 
         $subject->expects($this->once())
-                ->method('_getTemplateForSqlCondition')
-                ->with($condition)
+                ->method('_getTemplateForSqlExpression')
+                ->with($expression)
                 ->willReturn($template);
 
-        $result = $reflect->_renderSqlCondition($condition, $valueHashMap);
+        $result = $reflect->_renderSqlExpression($expression, $valueHashMap);
 
         $this->assertEquals($result, $output, 'Expected and retrieved outputs are not the same.');
     }
 
     /**
-     * Tests the SQL condition render method when no template render is retrieved for the given condition.
+     * Tests the SQL expression render method when no template render is retrieved for the given expression.
      *
      * @since [*next-version*]
      */
-    public function testRenderSqlConditionNoTemplate()
+    public function testRenderSqlExpressionNoTemplate()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
         // Method args
-        $condition = $this->createLogicalExpression('test', []);
+        $expression = $this->createExpression('test', []);
         $valueHashMap = [
             'e' => ':123',
             'f' => ':456',
         ];
 
         $subject->expects($this->once())
-                ->method('_getTemplateForSqlCondition')
-                ->with($condition)
+                ->method('_getTemplateForSqlExpression')
+                ->with($expression)
                 ->willReturn(null);
 
         $this->setExpectedException('InvalidArgumentException');
 
-        $reflect->_renderSqlCondition($condition, $valueHashMap);
+        $reflect->_renderSqlExpression($expression, $valueHashMap);
     }
 }
