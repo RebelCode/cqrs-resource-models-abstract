@@ -13,7 +13,7 @@ use Traversable;
  *
  * @since [*next-version*]
  */
-trait SqlTablesAwareTrait
+trait SqlTableNamesAwareTrait
 {
     /**
      * An array of table names.
