@@ -6,7 +6,7 @@ use \InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use stdClass;
 use Xpmock\TestCase;
-use RebelCode\Storage\Resource\Pdo\SqlTableNamesAwareTrait as TestSubject;
+use RebelCode\Storage\Resource\Pdo\SqlTableListAwareTrait as TestSubject;
 
 /**
  * Tests {@see TestSubject}.
@@ -20,7 +20,7 @@ class SqlTableNamesAwareTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\SqlTableNamesAwareTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\SqlTableListAwareTrait';
 
     /**
      * Creates a new instance of the test subject.
@@ -109,9 +109,9 @@ class SqlTableNamesAwareTraitTest extends TestCase
                 ->with($input)
                 ->willReturn($input);
 
-        $reflect->_setSqlTables($input);
+        $reflect->_setSqlTableList($input);
 
-        $this->assertSame($input, $reflect->_getSqlTables(), 'Set and retrieved value are not the same.');
+        $this->assertSame($input, $reflect->_getSqlTableList(), 'Set and retrieved value are not the same.');
     }
 
     /**
@@ -135,9 +135,9 @@ class SqlTableNamesAwareTraitTest extends TestCase
                 ->with($input)
                 ->willReturn($input);
 
-        $reflect->_setSqlTables($input);
+        $reflect->_setSqlTableList($input);
 
-        $this->assertSame($input, $reflect->_getSqlTables(), 'Set and retrieved value are not the same.');
+        $this->assertSame($input, $reflect->_getSqlTableList(), 'Set and retrieved value are not the same.');
     }
 
     /**
@@ -161,9 +161,9 @@ class SqlTableNamesAwareTraitTest extends TestCase
                 ->with($input)
                 ->willReturn($input);
 
-        $reflect->_setSqlTables($input);
+        $reflect->_setSqlTableList($input);
 
-        $this->assertSame($input, $reflect->_getSqlTables(), 'Set and retrieved value are not the same.');
+        $this->assertSame($input, $reflect->_getSqlTableList(), 'Set and retrieved value are not the same.');
     }
 
     /**
@@ -184,6 +184,6 @@ class SqlTableNamesAwareTraitTest extends TestCase
                 ->with($input)
                 ->willThrowException(new InvalidArgumentException());
 
-        $reflect->_setSqlTables($input);
+        $reflect->_setSqlTableList($input);
     }
 }

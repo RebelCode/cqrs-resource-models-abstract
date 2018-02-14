@@ -3,59 +3,76 @@
 namespace RebelCode\Storage\Resource\Pdo;
 
 use Dhii\Util\String\StringableInterface as Stringable;
-use InvalidArgumentException;
 use Exception as RootException;
+use InvalidArgumentException;
+use stdClass;
+use Traversable;
 
 /**
- * Common functionality for objects that are aware of an SQL table name.
+ * Common functionality for objects that are aware of a list of SQL table names.
  *
  * @since [*next-version*]
  */
-trait SqlTableNameAwareTrait
+trait SqlTableListAwareTrait
 {
     /**
-     * The table name.
+     * An array of table names.
      *
      * @since [*next-version*]
      *
-     * @var string|Stringable
+     * @var string[]|Stringable[]
      */
-    protected $sqlTable;
+    protected $sqlTableList;
 
     /**
-     * Retrieves the SQL table associated with this instance.
+     * Retrieves the SQL table list associated with this instance.
      *
      * @since [*next-version*]
      *
-     * @return string|Stringable The table name.
+     * @return string[]|Stringable[] The SQL tables names.
      */
-    protected function _getSqlTable()
+    protected function _getSqlTableList()
     {
-        return $this->sqlTable;
+        return $this->sqlTableList;
     }
 
     /**
-     * Set the SQL table for this instance.
+     * Sets the SQL table list for this instance.
      *
      * @since [*next-version*]
      *
-     * @param string|Stringable $sqlTable The SQL table name.
-     *
-     * @throws InvalidArgumentException If the argument is not a string or stringable object.
+     * @param string[]|Stringable[] $tables The SQL tables names.
      */
-    protected function _setSqlTable($sqlTable)
+    protected function _setSqlTableList($tables)
     {
-        if (!is_string($sqlTable) && !($sqlTable instanceof Stringable)) {
-            throw $this->_createInvalidArgumentException(
-                $this->__('Argument is not a string or stringable object'),
-                null,
-                null,
-                $sqlTable
-            );
+        $array = $this->_normalizeArray($tables);
+
+        foreach ($array as $_value) {
+            if (!is_string($_value) && !($_value instanceof Stringable)) {
+                throw $this->_createInvalidArgumentException(
+                    $this->__('Argument contains a non-string/non-stringable value'),
+                    null,
+                    null,
+                    $tables
+                );
+            }
         }
 
-        $this->sqlTable = $sqlTable;
+        $this->sqlTableList = $array;
     }
+
+    /**
+     * Normalizes a value into an array.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|stdClass|Traversable $value The value to normalize.
+     *
+     * @throws InvalidArgumentException If value cannot be normalized.
+     *
+     * @return array The normalized value.
+     */
+    abstract protected function _normalizeArray($value);
 
     /**
      * Creates a new invalid argument exception.

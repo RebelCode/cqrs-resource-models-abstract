@@ -6,7 +6,7 @@ use \InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use stdClass;
 use Xpmock\TestCase;
-use RebelCode\Storage\Resource\Pdo\SqlTableNameAwareTrait as TestSubject;
+use RebelCode\Storage\Resource\Pdo\SqlTableAwareTrait as TestSubject;
 
 /**
  * Tests {@see TestSubject}.
@@ -20,7 +20,7 @@ class SqlTableAwareTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\SqlTableNameAwareTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\SqlTableAwareTrait';
 
     /**
      * Creates a new instance of the test subject.
