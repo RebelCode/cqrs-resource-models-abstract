@@ -119,22 +119,25 @@ trait PdoUpdateCapableTrait
     abstract protected function _normalizeString($subject);
 
     /**
-     * Builds a INSERT SQL query.
+     * Builds a UPDATE SQL query.
+     *
+     * Consider using a countable argument for the $changeSet parameter for better performance.
      *
      * @since [*next-version*]
      *
-     * @param string|Stringable               $table        The name of the table to insert into.
-     * @param ExpressionInterface[]           $changeSet    The changes as a map of field names to expression values.
-     * @param LogicalExpressionInterface|null $condition    Optional condition that records must satisfy to be updated.
-     * @param array                           $valueHashMap Optional map of value names and their hashes.
+     * @param string|Stringable                 $table        The name of the table to insert into.
+     * @param array|TermInterface[]|Traversable $changeSet    The change set, mapping field names to their new values
+     *                                                        or value expressions.
+     * @param LogicalExpressionInterface|null   $condition    Optional WHERE clause condition.
+     * @param array                             $valueHashMap Optional map of value names and their hashes.
      *
      * @throws InvalidArgumentException If the change set is empty.
      *
-     * @return string The built INSERT query.
+     * @return string The built UPDATE query.
      */
     abstract protected function _buildUpdateSql(
         $table,
-        array $changeSet,
+        $changeSet,
         LogicalExpressionInterface $condition = null,
         array $valueHashMap = []
     );
