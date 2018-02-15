@@ -6,21 +6,21 @@ use \InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use stdClass;
 use Xpmock\TestCase;
-use RebelCode\Storage\Resource\Pdo\SqlConditionTemplateAwareTrait as TestSubject;
+use RebelCode\Storage\Resource\Pdo\SqlExpressionTemplateAwareTrait as TestSubject;
 
 /**
  * Tests {@see TestSubject}.
  *
  * @since [*next-version*]
  */
-class SqlConditionTemplateAwareTraitTest extends TestCase
+class SqlExpressionTemplateAwareTraitTest extends TestCase
 {
     /**
      * The class name of the test subject.
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\SqlConditionTemplateAwareTrait';
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Storage\Resource\Pdo\SqlExpressionTemplateAwareTrait';
 
     /**
      * Creates a new instance of the test subject.
@@ -87,15 +87,15 @@ class SqlConditionTemplateAwareTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    public function testGetSetSqlConditionTemplate()
+    public function testGetSetSqlExpressionTemplate()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
         $input = $this->createTemplate();
 
-        $reflect->_setSqlConditionTemplate($input);
+        $reflect->_setSqlExpressionTemplate($input);
 
-        $this->assertSame($input, $reflect->_getSqlConditionTemplate(), 'Set and retrieved value are not the same.');
+        $this->assertSame($input, $reflect->_getSqlExpressionTemplate(), 'Set and retrieved value are not the same.');
     }
 
     /**
@@ -103,15 +103,15 @@ class SqlConditionTemplateAwareTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    public function testGetSetSqlConditionTemplateNull()
+    public function testGetSetSqlExpressionTemplateNull()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
         $input = null;
 
-        $reflect->_setSqlConditionTemplate($input);
+        $reflect->_setSqlExpressionTemplate($input);
 
-        $this->assertSame($input, $reflect->_getSqlConditionTemplate(), 'Set and retrieved value are not the same.');
+        $this->assertSame($input, $reflect->_getSqlExpressionTemplate(), 'Set and retrieved value are not the same.');
     }
 
     /**
@@ -119,7 +119,7 @@ class SqlConditionTemplateAwareTraitTest extends TestCase
      *
      * @since [*next-version*]
      */
-    public function testGetSetSqlConditionTemplateInvalid()
+    public function testGetSetSqlExpressionTemplateInvalid()
     {
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
@@ -127,6 +127,6 @@ class SqlConditionTemplateAwareTraitTest extends TestCase
 
         $this->setExpectedException('InvalidArgumentException');
 
-        $reflect->_setSqlConditionTemplate($input);
+        $reflect->_setSqlExpressionTemplate($input);
     }
 }

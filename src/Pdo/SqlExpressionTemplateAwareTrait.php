@@ -8,52 +8,52 @@ use Exception as RootException;
 use InvalidArgumentException;
 
 /**
- * Common functionality for objects that are aware of a template that renders SQL conditions.
+ * Common functionality for objects that are aware of a template that renders SQL expressions.
  *
  * @since [*next-version*]
  */
-trait SqlConditionTemplateAwareTrait
+trait SqlExpressionTemplateAwareTrait
 {
     /**
-     * The SQL condition template instance.
+     * The SQL expression template instance.
      *
      * @since [*next-version*]
      *
      * @var TemplateInterface|null
      */
-    protected $sqlConditionTemplate;
+    protected $sqlExpressionTemplate;
 
     /**
-     * Retrieves the SQL condition template associated with this instance.
+     * Retrieves the SQL expression template associated with this instance.
      *
      * @since [*next-version*]
      *
-     * @return TemplateInterface|null The SQL condition template, if any.
+     * @return TemplateInterface|null The SQL expression template, if any.
      */
-    protected function _getSqlConditionTemplate()
+    protected function _getSqlExpressionTemplate()
     {
-        return $this->sqlConditionTemplate;
+        return $this->sqlExpressionTemplate;
     }
 
     /**
-     * Sets the SQL condition template for this instance.
+     * Sets the SQL expression template for this instance.
      *
      * @since [*next-version*]
      *
-     * @param TemplateInterface|null $sqlConditionTemplate The SQL condition template, if any.
+     * @param TemplateInterface|null $sqlExpressionTemplate The SQL expression template, if any.
      */
-    protected function _setSqlConditionTemplate($sqlConditionTemplate)
+    protected function _setSqlExpressionTemplate($sqlExpressionTemplate)
     {
-        if ($sqlConditionTemplate !== null && !($sqlConditionTemplate instanceof TemplateInterface)) {
+        if ($sqlExpressionTemplate !== null && !($sqlExpressionTemplate instanceof TemplateInterface)) {
             throw $this->_createInvalidArgumentException(
                 $this->__('Argument is not a template or null value'),
                 null,
                 null,
-                $sqlConditionTemplate
+                $sqlExpressionTemplate
             );
         }
 
-        $this->sqlConditionTemplate = $sqlConditionTemplate;
+        $this->sqlExpressionTemplate = $sqlExpressionTemplate;
     }
 
     /**
