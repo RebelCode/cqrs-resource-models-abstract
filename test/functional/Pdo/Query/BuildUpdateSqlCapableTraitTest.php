@@ -131,6 +131,7 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
         $subject = $this->createInstance();
         $reflect = $this->reflect($subject);
 
+        $table = 'users';
         $changeSet = [
             'age'  => $cExpr1 = $this->createExpression('plus', ['age', 1]),
             'name' => $cExpr2 = $this->createExpression('string', ['foobar']),
@@ -146,11 +147,11 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
                     'age + 1',
                     '"foobar"'
                 );
-        $expected = 'SET age = age + 1, name = "foobar"';
+        $expected = 'SET `users`.`age` = age + 1, `users`.`name` = "foobar"';
 
         $this->assertEquals(
             $expected,
-            $reflect->_buildSqlUpdateSet($changeSet, $valueHashMap),
+            $reflect->_buildSqlUpdateSet($table, $changeSet, $valueHashMap),
             'Expected and retrieved query portions do not match.'
         );
     }
@@ -181,7 +182,7 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
                     'age + 1',
                     '"foobar"'
                 );
-        $set = 'SET age = age + 1, name = "foobar"';
+        $set = 'SET `my_table`.`age` = age + 1, `my_table`.`name` = "foobar"';
 
         $condition = $this->createLogicalExpression('equal', ['name', 'foo']);
         $where = 'WHERE name = "foo"';
@@ -218,7 +219,7 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
             '10'  => ':123',
             'foo' => ':456',
         ];
-        $set = 'SET name = :456, surname = "bar"';
+        $set = 'SET `my_table`.`name` = :456, `my_table`.`surname` = "bar"';
 
         $condition = $this->createLogicalExpression('equal', ['age', 10]);
         $where = 'WHERE age = :123';
@@ -262,7 +263,7 @@ class BuildUpdateSqlCapableTraitTest extends TestCase
                     'age + 1',
                     '"foobar"'
                 );
-        $set = 'SET age = age + 1, name = "foobar"';
+        $set = 'SET `my_table`.`age` = age + 1, `my_table`.`name` = "foobar"';
 
         $condition = null;
         $where = '';
