@@ -5,6 +5,8 @@ namespace RebelCode\Storage\Resource\Pdo\Query;
 use Dhii\Expression\ExpressionInterface;
 use Dhii\Expression\LogicalExpressionInterface;
 use Dhii\Expression\TermInterface;
+use Dhii\Output\Exception\RendererExceptionInterface;
+use Dhii\Output\Exception\TemplateRenderExceptionInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
 use InvalidArgumentException;
@@ -130,12 +132,15 @@ trait BuildUpdateSqlCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param ExpressionInterface $expression   The expression to render.
-     * @param array               $valueHashMap Optional map of value names and their hashes.
+     * @param TermInterface         $expression   The expression to render.
+     * @param string[]|Stringable[] $valueHashMap Optional mapping of term names to their hashes.
+     *
+     * @throws RendererExceptionInterface       If an error occurred while rendering.
+     * @throws TemplateRenderExceptionInterface If the renderer failed to render the expression and context.
      *
      * @return string|Stringable The rendered expression.
      */
-    abstract protected function _renderSqlExpression(ExpressionInterface $expression, array $valueHashMap = []);
+    abstract protected function _renderSqlExpression(TermInterface $expression, array $valueHashMap = []);
 
     /**
      * Builds the SQL WHERE clause query string portion.
