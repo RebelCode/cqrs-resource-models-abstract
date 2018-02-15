@@ -52,7 +52,7 @@ trait BuildUpdateSqlCapableTrait
         }
 
         $tableName = $this->_escapeSqlReference($table);
-        $updateSet = $this->_buildSqlUpdateSet($table, $changeSet, $valueHashMap);
+        $updateSet = $this->_buildSqlUpdateSet($changeSet, $valueHashMap);
         $where = $this->_buildSqlWhereClause($condition, $valueHashMap);
 
         $query = sprintf(
@@ -70,14 +70,13 @@ trait BuildUpdateSqlCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param string                                  $table        The name of the table, used to prefix columns.
      * @param array|ExpressionInterface[]|Traversable $changeSet    The change set, mapping field names to their new
      *                                                              values or value expressions.
      * @param array                                   $valueHashMap Optional map of value names and their hashes.
      *
      * @return string The built SQL UPDATE SET portion string.
      */
-    protected function _buildSqlUpdateSet($table, $changeSet, array $valueHashMap)
+    protected function _buildSqlUpdateSet($changeSet, array $valueHashMap)
     {
         $_changes = [];
 
@@ -92,7 +91,7 @@ trait BuildUpdateSqlCapableTrait
                     : $this->_sanitizeSqlValue($_value);
             }
 
-            $_changes[] = sprintf('`%1$s`.`%2$s` = %3$s', $table, $_field, $_value);
+            $_changes[] = sprintf('`%1$s` = %2$s', $_field, $_value);
         }
 
         $changeStr = implode(', ', $_changes);
