@@ -75,15 +75,15 @@ trait PdoUpdateCapableTrait
             if (!isset($fcMap[$_field])) {
                 continue;
             }
-            // Get column name for field
+            // Add to new change set, but keyed with column name
             $_column = $fcMap[$_field];
+            $newChangeSet[$_column] = $_value;
+
             // Get hash for value
             $_hash = ($_value instanceof TermInterface)
                 ? $this->_getPdoExpressionHashMap($_value)
                 : $this->_getPdoValueHashString($_value);
             $_valueStr = $this->_normalizeString($_value);
-            // Add to new change set
-            $newChangeSet[$_column] = $_hash;
             // Add to value hash map
             $valueHashMap[$_valueStr] = $_hash;
         }

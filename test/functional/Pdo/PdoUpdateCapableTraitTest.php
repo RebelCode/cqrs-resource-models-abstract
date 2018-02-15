@@ -112,8 +112,8 @@ class PdoUpdateCapableTraitTest extends TestCase
         $reflect = $this->reflect($subject);
 
         $changeSet = [
-            'lastName' => 'bar',
-            'age' => 21,
+            'lastName' => $v1 = 'bar',
+            'age'      => $v2 = 21,
         ];
         $condition = $this->createLogicalExpression('equal', ['id', 5]);
 
@@ -133,8 +133,8 @@ class PdoUpdateCapableTraitTest extends TestCase
         );
 
         $processedChangeSet = [
-            'surname' => $h1,
-            'age'     => $h2
+            'surname' => $v1,
+            'age'     => $v2
         ];
 
         $subject->expects($this->once())
@@ -168,8 +168,8 @@ class PdoUpdateCapableTraitTest extends TestCase
 
         $condition = null;
         $changeSet = [
-            'lastName' => 'bar',
-            'age' => 21,
+            'lastName' => $v1 = 'bar',
+            'age'      => $v2 = 21,
         ];
 
         $subject->method('_getSqlUpdateTable')->willReturn($table = 'users');
@@ -188,8 +188,8 @@ class PdoUpdateCapableTraitTest extends TestCase
         );
 
         $processedChangeSet = [
-            'surname' => $h1,
-            'age'     => $h2
+            'surname' => $v1,
+            'age'     => $v2
         ];
 
         $subject->expects($this->once())
