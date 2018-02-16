@@ -100,7 +100,7 @@ trait WpdbInsertCapableTrait
                 $_value = $this->_containerGet($record, $_field);
                 // Calculate hash for value
                 $_valueStr = $this->_normalizeString($_value);
-                $_valueHash = $this->_getWpdbValueHashString($_value, count($valueHashMap));
+                $_valueHash = $this->_getWpdbValueHashString($_value, count($valueHashMap) + 1);
                 // Add value-to-hash entry to map
                 $valueHashMap[$_valueStr] = $_valueHash;
                 // Add column-to-value entry to record data

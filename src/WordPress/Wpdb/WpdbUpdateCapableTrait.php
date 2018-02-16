@@ -82,7 +82,7 @@ trait WpdbUpdateCapableTrait
             // Get hash for value
             $_hash = ($_value instanceof TermInterface)
                 ? $this->_getWpdbExpressionHashMap($_value)
-                : $this->_getWpdbValueHashString($_value, count($valueHashMap));
+                : $this->_getWpdbValueHashString($_value, count($valueHashMap) + 1);
             $_valueStr = $this->_normalizeString($_value);
             // Add to new change set
             $newChangeSet[$_column] = $_hash;
