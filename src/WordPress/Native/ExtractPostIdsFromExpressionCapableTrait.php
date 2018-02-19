@@ -173,7 +173,7 @@ trait ExtractPostIdsFromExpressionCapableTrait
     }
 
     /**
-     * Extracts post IDs from an OR expression.
+     * Extracts post IDs from an IN expression.
      *
      * @since [*next-version*]
      *
