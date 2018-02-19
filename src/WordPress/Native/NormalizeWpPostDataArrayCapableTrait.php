@@ -51,7 +51,7 @@ trait NormalizeWpPostDataArrayCapableTrait
             $metaKey => []
         ];
 
-        foreach ($fields as $_field => $_column) {
+        foreach ($fields as $_field => $_key) {
             try {
                 if (!$this->_containerHas($postData, $_field)) {
                     continue;
@@ -64,9 +64,9 @@ trait NormalizeWpPostDataArrayCapableTrait
             $_value = $this->_containerGet($postData, $_field);
             $_value = $this->_normalizeWpPostDataValue($_value);
             // Ensure column is a string
-            $_column = $this->_normalizeString($_column);
+            $_key = $this->_normalizeString($_key);
             // Add to data
-            $data[$_column] = $_value;
+            $data[$_key] = $_value;
         }
 
         return $data;
