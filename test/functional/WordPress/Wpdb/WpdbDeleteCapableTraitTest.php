@@ -139,7 +139,7 @@ class WpdbDeleteCapableTraitTest extends TestCase
 
         $subject->expects($this->once())
                 ->method('_executeWpdbQuery')
-                ->with($query, $hashMap);
+                ->with($query, array_flip($hashMap));
 
         $reflect->_delete($condition);
     }

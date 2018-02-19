@@ -34,7 +34,7 @@ trait WpdbDeleteCapableTrait
             $valueHashMap
         );
 
-        $this->_executeWpdbQuery($query, $valueHashMap);
+        $this->_executeWpdbQuery($query, array_flip($valueHashMap));
     }
 
     /**

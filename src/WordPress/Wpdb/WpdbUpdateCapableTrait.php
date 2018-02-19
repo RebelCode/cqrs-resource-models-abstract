@@ -49,7 +49,7 @@ trait WpdbUpdateCapableTrait
             $valueHashMap
         );
 
-        $this->_executeWpdbQuery($query, array_keys($valueHashMap));
+        $this->_executeWpdbQuery($query, array_flip($valueHashMap));
     }
 
     /**

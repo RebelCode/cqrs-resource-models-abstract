@@ -191,14 +191,7 @@ class WpdbUpdateCapableTraitTest extends TestCase
                 ->method('_executeWpdbQuery')
                 ->with(
                     $query,
-                    [
-                        $condVal1,
-                        $condVal2,
-                        $condVal3,
-                        $val1,
-                        $val2,
-                        $val3,
-                    ]
+                    array_flip($expectedHashMap)
                 );
 
         $reflect->_update($changeSet, $condition);
