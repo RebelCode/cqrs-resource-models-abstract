@@ -1,41 +1,34 @@
 <?php
 
-namespace RebelCode\Storage\Resource\Pdo;
+namespace RebelCode\Storage\Resource\WordPress\Wpdb;
 
-use Dhii\Config\Exception\ConfigExceptionInterface;
+use Dhii\Expression\ExpressionInterface;
 use Dhii\Expression\LogicalExpressionInterface;
-use Dhii\Expression\TermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
-use PDO;
-use PDOStatement;
-use Psr\Container\NotFoundExceptionInterface;
 use Traversable;
 
 /**
- * Common functionality for objects that can retrieve records from a database using PDO.
+ * Common functionality for objects that can retrieve records from a database using WPDB.
  *
  * @since [*next-version*]
  */
-trait PdoSelectCapableTrait
+trait WpdbSelectCapableTrait
 {
     /**
-     * Executes a SELECT SQL query, retrieving records from the database that satisfy the given condition.
+     * Executes a SELECT WPDB SQL query, retrieving records from the database that satisfy the given condition.
      *
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface|null $condition Optional condition that records must satisfy.
      *                                                   If null, all records in the target table are retrieved.
      *
-     * @throws ConfigExceptionInterface   If an error occurred while reading from the config.
-     * @throws NotFoundExceptionInterface If required configuration was not found in the config.
-     *
      * @return array|Traversable A list of retrieved records.
      */
     protected function _select(LogicalExpressionInterface $condition = null)
     {
-        $fields       = $this->_getSqlSelectFieldNames();
+        $fields = $this->_getSqlSelectFieldNames();
         $valueHashMap = ($condition !== null)
-            ? $this->_getPdoExpressionHashMap($condition, $fields)
+            ? $this->_getWpdbExpressionHashMap($condition, $fields)
             : [];
 
         $query = $this->_buildSelectSql(
@@ -46,7 +39,7 @@ trait PdoSelectCapableTrait
             $valueHashMap
         );
 
-        return $this->_executePdoQuery($query, array_flip($valueHashMap))->fetchAll(PDO::FETCH_ASSOC);
+        return $this->_executeWpdbQuery($query, array_flip($valueHashMap));
     }
 
     /**
@@ -74,9 +67,6 @@ trait PdoSelectCapableTrait
      * Retrieves the SQL database table names used in SQL SELECT queries.
      *
      * @since [*next-version*]
-     *
-     * @throws ConfigExceptionInterface   If an error occurred while reading from the config.
-     * @throws NotFoundExceptionInterface If the table/entity name was not found in the config.
      *
      * @return string[]|Stringable[] A list of SQL database table names.
      */
@@ -110,31 +100,26 @@ trait PdoSelectCapableTrait
     abstract protected function _getSqlSelectJoinConditions();
 
     /**
-     * Retrieves the expression value hash map for a given SQL condition, for use in PDO parameter binding.
+     * Retrieves the expression value hash map for a given WPDB SQL condition, for use in WPDB args interpolation.
      *
      * @since [*next-version*]
      *
-     * @param TermInterface         $condition    The condition instance.
-     * @param string[]|Stringable[] $ignore       A list of term names to ignore, typically column names.
-     * @param array                 $valueHashMap The value hash map reference to write to.
+     * @param ExpressionInterface   $condition The condition instance.
+     * @param string[]|Stringable[] $ignore    A list of term names to ignore, typically column names.
      *
      * @return array A map of value names to their respective hashes.
      */
-    abstract protected function _getPdoExpressionHashMap(
-        TermInterface $condition,
-        array $ignore = [],
-        array &$valueHashMap = []
-    );
+    abstract protected function _getWpdbExpressionHashMap(ExpressionInterface $condition, array $ignore = []);
 
     /**
-     * Executes a given SQL query using PDO.
+     * Executes a query using wpdb.
      *
      * @since [*next-version*]
      *
-     * @param string|Stringable $query     The query to invoke.
-     * @param array             $inputArgs The input arguments to use when executing the query.
+     * @param string|Stringable $query     The query to execute.
+     * @param array             $inputArgs An array of arguments to use for interpolating placeholders in the query.
      *
-     * @return PDOStatement The executed statement.
+     * @return array A list of associative arrays, each representing a single record.
      */
-    abstract protected function _executePdoQuery($query, array $inputArgs = []);
+    abstract protected function _executeWpdbQuery($query, array $inputArgs = []);
 }

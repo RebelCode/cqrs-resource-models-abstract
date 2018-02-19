@@ -2,7 +2,6 @@
 
 namespace RebelCode\Storage\Resource\Pdo\Query;
 
-use Dhii\Util\String\StringableInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
 use InvalidArgumentException;
@@ -43,9 +42,9 @@ trait BuildInsertSqlCapableTrait
             );
         }
 
-        $tableName   = $this->_escapeSqlReference($table);
+        $tableName = $this->_escapeSqlReference($table);
         $columnsList = $this->_escapeSqlReferenceArray($columns);
-        $values      = $this->_buildSqlValuesList($columns, $rowSet, $valueHashMap);
+        $values = $this->_buildSqlValuesList($columns, $rowSet, $valueHashMap);
 
         $query = sprintf(
             'INSERT INTO %1$s (%2$s) %3$s',
@@ -107,7 +106,7 @@ trait BuildInsertSqlCapableTrait
             }
 
             // Get row data for this column
-            $_value    = $rowData[$_columnName];
+            $_value = $rowData[$_columnName];
             $_valueKey = $this->_normalizeString($_value);
             // Use hash instead of value if available
             $_realValue = isset($valueHashMap[$_valueKey])
@@ -133,7 +132,7 @@ trait BuildInsertSqlCapableTrait
      */
     protected function _sanitizeSqlValue($value)
     {
-        return (is_string($value) || $value instanceof StringableInterface)
+        return (is_string($value) || $value instanceof Stringable)
             ? sprintf('"%s"', $this->_normalizeString($value))
             : $value;
     }

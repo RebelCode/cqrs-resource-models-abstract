@@ -1,19 +1,18 @@
 <?php
 
-namespace RebelCode\Storage\Resource\Pdo;
+namespace RebelCode\Storage\Resource\WordPress\Wpdb;
 
 use Dhii\Expression\ExpressionInterface;
 use Dhii\Expression\LogicalExpressionInterface;
-use Dhii\Expression\TermInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use PDOStatement;
 
 /**
- * Common functionality for objects that can delete records in a database via PDO.
+ * Common functionality for objects that can delete records in a database via WPDB.
  *
  * @since [*next-version*]
  */
-trait PdoDeleteCapableTrait
+trait WpdbDeleteCapableTrait
 {
     /**
      * Executes a DELETE SQL query, deleting records in the database that satisfy the given condition.
@@ -21,14 +20,12 @@ trait PdoDeleteCapableTrait
      * @since [*next-version*]
      *
      * @param LogicalExpressionInterface|null $condition Optional condition that records must satisfy to be deleted.
-     *
-     * @return PDOStatement The executed PDO statement.
      */
     protected function _delete(LogicalExpressionInterface $condition = null)
     {
         $fieldNames = $this->_getSqlDeleteFieldNames();
         $valueHashMap = ($condition !== null)
-            ? $this->_getPdoExpressionHashMap($condition, $fieldNames)
+            ? $this->_getWpdbExpressionHashMap($condition, $fieldNames)
             : [];
 
         $query = $this->_buildDeleteSql(
@@ -37,9 +34,7 @@ trait PdoDeleteCapableTrait
             $valueHashMap
         );
 
-        $statement = $this->_executePdoQuery($query, array_flip($valueHashMap));
-
-        return $statement;
+        $this->_executeWpdbQuery($query, array_flip($valueHashMap));
     }
 
     /**
@@ -78,31 +73,26 @@ trait PdoDeleteCapableTrait
     abstract protected function _getSqlDeleteFieldNames();
 
     /**
-     * Retrieves the expression value hash map for a given SQL condition, for use in PDO parameter binding.
+     * Retrieves the expression value hash map for a given WPDB SQL condition, for use in WPDB args interpolation.
      *
      * @since [*next-version*]
      *
-     * @param TermInterface         $condition    The condition instance.
-     * @param string[]|Stringable[] $ignore       A list of term names to ignore, typically column names.
-     * @param array                 $valueHashMap The value hash map reference to write to.
+     * @param ExpressionInterface   $condition The condition instance.
+     * @param string[]|Stringable[] $ignore    A list of term names to ignore, typically column names.
      *
      * @return array A map of value names to their respective hashes.
      */
-    abstract protected function _getPdoExpressionHashMap(
-        TermInterface $condition,
-        array $ignore = [],
-        array &$valueHashMap = []
-    );
+    abstract protected function _getWpdbExpressionHashMap(ExpressionInterface $condition, array $ignore = []);
 
     /**
-     * Executes a given SQL query using PDO.
+     * Executes a query using wpdb.
      *
      * @since [*next-version*]
      *
-     * @param string|Stringable $query     The query to invoke.
-     * @param array             $inputArgs The input arguments to use when executing the query.
+     * @param string|Stringable $query     The query to execute.
+     * @param array             $inputArgs An array of arguments to use for interpolating placeholders in the query.
      *
-     * @return PDOStatement The executed statement.
+     * @return array A list of associative arrays, each representing a single record.
      */
-    abstract protected function _executePdoQuery($query, array $inputArgs = []);
+    abstract protected function _executeWpdbQuery($query, array $inputArgs = []);
 }

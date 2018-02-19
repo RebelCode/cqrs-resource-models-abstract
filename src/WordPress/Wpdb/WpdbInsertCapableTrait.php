@@ -1,25 +1,23 @@
 <?php
 
-namespace RebelCode\Storage\Resource\Pdo;
+namespace RebelCode\Storage\Resource\WordPress\Wpdb;
 
 use ArrayAccess;
-use Dhii\Util\String\StringableInterface;
-use OutOfRangeException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
-use PDOStatement;
+use OutOfRangeException;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use stdClass;
 use Traversable;
 
 /**
- * Common functionality for objects that can insert records into a database using PDO.
+ * Common functionality for objects that can insert records into a database using WPDB.
  *
  * @since [*next-version*]
  */
-trait PdoInsertCapableTrait
+trait WpdbInsertCapableTrait
 {
     /**
      * Executes an INSERT SQL query, inserting records into the database.
@@ -27,8 +25,6 @@ trait PdoInsertCapableTrait
      * @since [*next-version*]
      *
      * @param array[]|ArrayAccess[]|stdClass[]|ContainerInterface[]|Traversable $records A list of records to insert.
-     *
-     * @return PDOStatement The executed PDO statement.
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from a record's container.
      */
@@ -43,9 +39,7 @@ trait PdoInsertCapableTrait
             $valueHashMap
         );
 
-        $statement = $this->_executePdoQuery($query, array_flip($valueHashMap));
-
-        return $statement;
+        $this->_executeWpdbQuery($query, array_flip($valueHashMap));
     }
 
     /**
@@ -92,7 +86,7 @@ trait PdoInsertCapableTrait
      *
      * @throws ContainerExceptionInterface If an error occurred while reading from the record container.
      */
-    protected function _extractRecordData($record, &$valueHashMap = [])
+    protected function _extractRecordData($record, array &$valueHashMap = [])
     {
         // Initialize variable, in case it was declared implicitly during the method call
         if ($valueHashMap === null) {
@@ -106,7 +100,7 @@ trait PdoInsertCapableTrait
                 $_value = $this->_containerGet($record, $_field);
                 // Calculate hash for value
                 $_valueStr = $this->_normalizeString($_value);
-                $_valueHash = $this->_getPdoValueHashString($_valueStr);
+                $_valueHash = $this->_getWpdbValueHashString($_value, count($valueHashMap) + 1);
                 // Add value-to-hash entry to map
                 $valueHashMap[$_valueStr] = $_valueHash;
                 // Add column-to-value entry to record data
@@ -153,15 +147,16 @@ trait PdoInsertCapableTrait
     abstract protected function _containerHas($container, $key);
 
     /**
-     * Hashes a query value for use in PDO queries when parameter binding.
+     * Hashes a query value for use in WPDB queries when argument interpolating.
      *
      * @since [*next-version*]
      *
-     * @param string $value The value to hash.
+     * @param string $value    The value to hash.
+     * @param int    $position The position of the value in the hash map.
      *
      * @return string The string hash.
      */
-    abstract protected function _getPdoValueHashString($value);
+    abstract protected function _getWpdbValueHashString($value, $position);
 
     /**
      * Builds an INSERT SQL query.
@@ -210,16 +205,16 @@ trait PdoInsertCapableTrait
     abstract protected function _getSqlInsertFieldColumnMap();
 
     /**
-     * Executes a given SQL query using PDO.
+     * Executes a query using wpdb.
      *
      * @since [*next-version*]
      *
-     * @param string|Stringable $query     The query to invoke.
-     * @param array             $inputArgs The input arguments to use when executing the query.
+     * @param string|Stringable $query     The query to execute.
+     * @param array             $inputArgs An array of arguments to use for interpolating placeholders in the query.
      *
-     * @return PDOStatement The executed statement.
+     * @return array A list of associative arrays, each representing a single record.
      */
-    abstract protected function _executePdoQuery($query, array $inputArgs = []);
+    abstract protected function _executeWpdbQuery($query, array $inputArgs = []);
 
     /**
      * Normalizes a value to its string representation.

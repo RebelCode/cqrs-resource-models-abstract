@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d165cf77e696ff2647b787aacc199269",
+    "content-hash": "18b257505774837e7a0df2b11748b99a",
     "packages": [
         {
             "name": "dhii/config-interface",
@@ -550,6 +550,54 @@
             "time": "2017-03-13T12:08:29+00:00"
         },
         {
+            "name": "dhii/invocable-interface",
+            "version": "v0.1-alpha1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dhii/invocable-interface.git",
+                "reference": "85f9fae9ae6bb53213c2a2354edf78bb364b705f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dhii/invocable-interface/zipball/85f9fae9ae6bb53213c2a2354edf78bb364b705f",
+                "reference": "85f9fae9ae6bb53213c2a2354edf78bb364b705f",
+                "shasum": ""
+            },
+            "require": {
+                "dhii/exception-interface": "^0.1 | ^0.2",
+                "php": "^5.3 | ^7.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "<=0.3.2",
+                "dhii/php-cs-fixer-config": "dev-php-5.3",
+                "phpunit/phpunit": "^4.8",
+                "ptrofimov/xpmock": "^1.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dhii\\Invocation\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dhii Team",
+                    "email": "development@dhii.co"
+                }
+            ],
+            "description": "Interface for objects that can be invoked.",
+            "time": "2018-02-12T16:56:45+00:00"
+        },
+        {
             "name": "dhii/iterator-interface",
             "version": "dev-release/0.1",
             "source": {
@@ -596,20 +644,20 @@
         },
         {
             "name": "dhii/output-renderer-interface",
-            "version": "v0.2",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Dhii/output-renderer-interface.git",
-                "reference": "be225ecdc9cd0ea087e2fc7d9845f0b7708d0350"
+                "reference": "7481185f3ee06eacaec951504c96b1d4ee06d7bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Dhii/output-renderer-interface/zipball/be225ecdc9cd0ea087e2fc7d9845f0b7708d0350",
-                "reference": "be225ecdc9cd0ea087e2fc7d9845f0b7708d0350",
+                "url": "https://api.github.com/repos/Dhii/output-renderer-interface/zipball/7481185f3ee06eacaec951504c96b1d4ee06d7bc",
+                "reference": "7481185f3ee06eacaec951504c96b1d4ee06d7bc",
                 "shasum": ""
             },
             "require": {
-                "dhii/exception-interface": "^0.1",
+                "dhii/exception-interface": "^0.1 | ^0.2",
                 "dhii/stringable-interface": "^0.1",
                 "php": "^5.3 | ^7.0"
             },
@@ -617,9 +665,15 @@
                 "codeclimate/php-test-reporter": "dev-master",
                 "dhii/php-cs-fixer-config": "dev-php-5.3",
                 "phpunit/phpunit": "4.*",
+                "psr/container": "^1.0",
                 "ptrofimov/xpmock": "^1.1"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.3.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Dhii\\Output\\": "src/"
@@ -636,7 +690,7 @@
                 }
             ],
             "description": "An interface for objects that can perform rendering.",
-            "time": "2017-10-04T12:23:52+00:00"
+            "time": "2018-01-11T16:13:43+00:00"
         },
         {
             "name": "dhii/sql-interface",
@@ -644,12 +698,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Dhii/sql-interface.git",
-                "reference": "13541ac960df52d9a1cdd523067253f7542af587"
+                "reference": "a4e2ab9d6ff4596de4a3f034bbeb6f0fc4d99356"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Dhii/sql-interface/zipball/13541ac960df52d9a1cdd523067253f7542af587",
-                "reference": "13541ac960df52d9a1cdd523067253f7542af587",
+                "url": "https://api.github.com/repos/Dhii/sql-interface/zipball/a4e2ab9d6ff4596de4a3f034bbeb6f0fc4d99356",
+                "reference": "a4e2ab9d6ff4596de4a3f034bbeb6f0fc4d99356",
                 "shasum": ""
             },
             "require": {
@@ -686,7 +740,7 @@
                 }
             ],
             "description": "Interfaces for SQL resource abstraction.",
-            "time": "2018-02-02T12:23:49+00:00"
+            "time": "2018-02-05T17:10:49+00:00"
         },
         {
             "name": "dhii/stringable-interface",
@@ -1229,16 +1283,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.7.3",
+            "version": "1.7.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "e4ed002c67da8eceb0eb8ddb8b3847bb53c5c2bf"
+                "reference": "dfd6be44111a7c41c2e884a336cc4f461b3b2401"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/e4ed002c67da8eceb0eb8ddb8b3847bb53c5c2bf",
-                "reference": "e4ed002c67da8eceb0eb8ddb8b3847bb53c5c2bf",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/dfd6be44111a7c41c2e884a336cc4f461b3b2401",
+                "reference": "dfd6be44111a7c41c2e884a336cc4f461b3b2401",
                 "shasum": ""
             },
             "require": {
@@ -1250,7 +1304,7 @@
             },
             "require-dev": {
                 "phpspec/phpspec": "^2.5|^3.2",
-                "phpunit/phpunit": "^4.8.35 || ^5.7"
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5"
             },
             "type": "library",
             "extra": {
@@ -1288,7 +1342,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2017-11-24T13:59:53+00:00"
+            "time": "2018-02-19T10:16:54+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

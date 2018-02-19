@@ -1,6 +1,6 @@
 <?php
 
-namespace RebelCode\Storage\Resource\Pdo;
+namespace RebelCode\Storage\Resource\WordPress\Wpdb;
 
 use Dhii\Expression\ExpressionInterface;
 use Dhii\Expression\LogicalExpressionInterface;
@@ -9,14 +9,17 @@ use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
 use InvalidArgumentException;
 use PDOStatement;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Traversable;
 
 /**
- * Common functionality for objects that can update records in a database using PDO.
+ * Common functionality for objects that can update records in a database using WPDB.
  *
  * @since [*next-version*]
  */
-trait PdoUpdateCapableTrait
+trait WpdbUpdateCapableTrait
 {
     /**
      * Executes an UPDATE SQL query, updating records in the database that satisfy the given condition.
@@ -27,15 +30,16 @@ trait PdoUpdateCapableTrait
      *                                                     value expressions.
      * @param LogicalExpressionInterface|null   $condition Optional condition that records must satisfy to be updated.
      *
-     * @return PDOStatement The executed PDO statement.
+     * @throws ContainerExceptionInterface If an error occurred while reading from the container.
      */
     protected function _update($changeSet, LogicalExpressionInterface $condition = null)
     {
         $fields = array_keys($this->_getSqlUpdateFieldColumnMap());
+        // Hash map for the condition
         $valueHashMap = ($condition !== null)
-            ? $this->_getPdoExpressionHashMap($condition, $fields)
+            ? $this->_getWpdbExpressionHashMap($condition, $fields)
             : [];
-
+        // Fields to columns in change set, and hashes for values in change set
         $changeSet = $this->_preProcessChangeSet($changeSet, $valueHashMap);
 
         $query = $this->_buildUpdateSql(
@@ -45,9 +49,7 @@ trait PdoUpdateCapableTrait
             $valueHashMap
         );
 
-        $statement = $this->_executePdoQuery($query, array_flip($valueHashMap));
-
-        return $statement;
+        $this->_executeWpdbQuery($query, array_flip($valueHashMap));
     }
 
     /**
@@ -81,8 +83,8 @@ trait PdoUpdateCapableTrait
 
             // Get hash for value
             $_hash = ($_value instanceof TermInterface)
-                ? $this->_getPdoExpressionHashMap($_value)
-                : $this->_getPdoValueHashString($_value);
+                ? $this->_getWpdbExpressionHashMap($_value)
+                : $this->_getWpdbValueHashString($_value, count($valueHashMap) + 1);
             $_valueStr = $this->_normalizeString($_value);
             // Add to value hash map
             $valueHashMap[$_valueStr] = $_hash;
@@ -92,31 +94,16 @@ trait PdoUpdateCapableTrait
     }
 
     /**
-     * Hashes a query value for use in PDO queries when parameter binding.
+     * Hashes a query value for use in WPDB queries when argument interpolating.
      *
      * @since [*next-version*]
      *
-     * @param string $value The value to hash.
+     * @param string $value    The value to hash.
+     * @param int    $position The position of the value in the hash map.
      *
      * @return string The string hash.
      */
-    abstract protected function _getPdoValueHashString($value);
-
-    /**
-     * Normalizes a value to its string representation.
-     *
-     * The values that can be normalized are any scalar values, as well as
-     * {@see StringableInterface).
-     *
-     * @since [*next-version*]
-     *
-     * @param string|int|float|bool|Stringable $subject The value to normalize to string.
-     *
-     * @throws InvalidArgumentException If the value cannot be normalized.
-     *
-     * @return string The string that resulted from normalization.
-     */
-    abstract protected function _normalizeString($subject);
+    abstract protected function _getWpdbValueHashString($value, $position);
 
     /**
      * Builds a UPDATE SQL query.
@@ -161,33 +148,44 @@ trait PdoUpdateCapableTrait
     abstract protected function _getSqlUpdateFieldColumnMap();
 
     /**
-     * Retrieves the expression value hash map for a given SQL condition, for use in PDO parameter binding.
+     * Retrieves the expression value hash map for a given WPDB SQL condition, for use in WPDB args interpolation.
      *
      * @since [*next-version*]
      *
-     * @param TermInterface         $condition    The condition instance.
-     * @param string[]|Stringable[] $ignore       A list of term names to ignore, typically column names.
-     * @param array                 $valueHashMap The value hash map reference to write to.
+     * @param ExpressionInterface   $condition The condition instance.
+     * @param string[]|Stringable[] $ignore    A list of term names to ignore, typically column names.
      *
      * @return array A map of value names to their respective hashes.
      */
-    abstract protected function _getPdoExpressionHashMap(
-        TermInterface $condition,
-        array $ignore = [],
-        array &$valueHashMap = []
-    );
+    abstract protected function _getWpdbExpressionHashMap(ExpressionInterface $condition, array $ignore = []);
 
     /**
-     * Executes a given SQL query using PDO.
+     * Executes a query using wpdb.
      *
      * @since [*next-version*]
      *
-     * @param string|Stringable $query     The query to invoke.
-     * @param array             $inputArgs The input arguments to use when executing the query.
+     * @param string|Stringable $query     The query to execute.
+     * @param array             $inputArgs An array of arguments to use for interpolating placeholders in the query.
      *
-     * @return PDOStatement The executed statement.
+     * @return array A list of associative arrays, each representing a single record.
      */
-    abstract protected function _executePdoQuery($query, array $inputArgs = []);
+    abstract protected function _executeWpdbQuery($query, array $inputArgs = []);
+
+    /**
+     * Normalizes a value to its string representation.
+     *
+     * The values that can be normalized are any scalar values, as well as
+     * {@see StringableInterface).
+     *
+     * @since [*next-version*]
+     *
+     * @param string|int|float|bool|Stringable $subject The value to normalize to string.
+     *
+     * @throws InvalidArgumentException If the value cannot be normalized.
+     *
+     * @return string The string that resulted from normalization.
+     */
+    abstract protected function _normalizeString($subject);
 
     /**
      * Creates a new Dhii invalid argument exception.
