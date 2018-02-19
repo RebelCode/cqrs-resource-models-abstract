@@ -40,7 +40,7 @@ trait WpdbUpdateCapableTrait
             ? $this->_getWpdbExpressionHashMap($condition, $fields)
             : [];
         // Fields to columns in change set, and hashes for values in change set
-        $this->_preProcessChangeSet($changeSet, $valueHashMap);
+        $changeSet = $this->_preProcessChangeSet($changeSet, $valueHashMap);
 
         $query = $this->_buildUpdateSql(
             $this->_getSqlUpdateTable(),
@@ -77,15 +77,15 @@ trait WpdbUpdateCapableTrait
             if (!isset($fcMap[$_field])) {
                 continue;
             }
-            // Get column name for field
+            // Add to new change set, but keyed with column name
             $_column = $fcMap[$_field];
+            $newChangeSet[$_column] = $_value;
+
             // Get hash for value
             $_hash = ($_value instanceof TermInterface)
                 ? $this->_getWpdbExpressionHashMap($_value)
                 : $this->_getWpdbValueHashString($_value, count($valueHashMap) + 1);
             $_valueStr = $this->_normalizeString($_value);
-            // Add to new change set
-            $newChangeSet[$_column] = $_hash;
             // Add to value hash map
             $valueHashMap[$_valueStr] = $_hash;
         }

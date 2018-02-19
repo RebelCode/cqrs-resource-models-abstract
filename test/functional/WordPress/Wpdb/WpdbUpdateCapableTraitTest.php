@@ -181,9 +181,14 @@ class WpdbUpdateCapableTraitTest extends TestCase
             $val2     => $hash2,
             $val3     => $hash3,
         ];
+        $processedChangeSet = [
+            $col1 => $val1,
+            $col2 => $val2,
+            $col3 => $val3,
+        ];
         $subject->expects($this->atLeastOnce())
                 ->method('_buildUpdateSql')
-                ->with($table, $changeSet, $condition, $expectedHashMap)
+                ->with($table, $processedChangeSet, $condition, $expectedHashMap)
                 ->willReturn($query);
 
         // Expectation for query execution
